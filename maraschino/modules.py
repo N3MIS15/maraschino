@@ -258,6 +258,27 @@ AVAILABLE_MODULES = [
             },
         ]
     },
+    {
+        'name': 'helloworld',
+        'label': 'Hello World',
+        'description': 'Hello World Sample Module',
+        'static': True,
+        'poll': 0,
+        'delay': 0,
+        'settings': [
+            {
+                'key': 'helloworld_string',
+                'value': 'Hello World',
+                'description': 'Input text here',
+            },
+            {
+                'key': 'helloworld_bool',
+                'value': '0',
+                'description': 'Show Extra Info',
+                'type': 'bool',
+            },
+        ]
+    },
 ]
 
 SERVER_SETTINGS = [
