@@ -1,0 +1,89 @@
+<div id="library_edit_dialog" class="dialog">
+
+  <div class="close">x</div>
+
+  <h2>{{ artist.label }}</h2>
+
+  <form method="" action="">
+    <div class="column1">
+
+      <div id="media_id" media-type="artist" data-id="{{ artist.artistid }}"></div>
+
+      <div class="formrow">
+        <label for="id_description">Description</label>
+        <textarea class="description" type="text" id="id_description" name="description">{{ artist.description }}</textarea>
+      </div>
+
+      <div class="formrow">
+        <label for="id_genre">Genres</label>
+        <input id="id_genre" name="genre" type="text" value="{{ artist.genre }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_instrument">Instrument</label>
+        <input id="id_instrument" name="instrument" type="text" value="{{ artist.instrument }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_style">Style</label>
+        <input id="id_style" name="style" type="text" value="{{ artist.style }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_mood">Mood</label>
+        <input id="id_mood" name="mood" type="text" value="{{ artist.mood }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_formed">Formed</label>
+        <input id="id_formed" name="formed" type="text" value="{{ artist.formed }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_died">Died</label>
+        <input id="id_died" name="died" type="text" value="{{ artist.died }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_disbanded">Disbanded</label>
+        <input id="id_disbanded" name="disbanded" type="text" value="{{ artist.disbanded }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_yearsactive">Years Active</label>
+        <input id="id_yearsactive" name="yearsactive" type="text" value="{{ artist.yearsactive }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_musicbrainzartistid"><a href="http://www.musicbrainz.org/artist/{{ artist.musicbrainzartistid }}/" target="_blank" title="View on MusicBrainz">MusicBrainz ID</a></label>
+        <input id="id_musicbrainzartistid" name="musicbrainzartistid" type="text" value="{{ artist.musicbrainzartistid }}">
+      </div>
+
+    </div>
+
+  </form>
+
+  <div class="column2">
+
+	<span>Avaliable genres</span>
+
+    <div class="avail_genres">
+      {% for genre in genres %}
+        <input type="checkbox" value="{{ genre }}" {% if genre in artist.genre %}checked="yes"{% endif %}/>{{ genre }}<br/>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <div class="column3">
+    {% if itemart %}
+      <img class="poster" src="{{ itemart }}">
+    {% endif %}
+  </div>
+
+  <div class="choices">
+    <div class="save library_edit">Save</div>
+    <div class="cancel">Cancel</div>
+  </div>
+
+</div>

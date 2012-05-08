@@ -1,0 +1,77 @@
+<div id="library_edit_dialog" class="dialog">
+
+  <div class="close">x</div>
+
+  <h2>{{ show.title }}</h2>
+
+  <form method="" action="">
+    <div class="column1">
+
+      <div id="media_id" media-type="tvshow" data-id="{{ show.tvshowid }}"></div>
+
+      <div class="formrow">
+        <label for="id_title">Title</label>
+        <input id="id_title" name="title" type="text"value="{{ show.title }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_sorttitle">Sort Title</label>
+        <input id="id_sorttitle" name="sorttitle" type="text"value="{{ show.sorttitle }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_plot">Plot</label>
+        <textarea class="plot" type="text" id="id_plot" name="plot">{{ show.plot }}</textarea>
+      </div>
+
+      <div class="formrow">
+        <label for="id_genre">Genres</label>
+        <input id="id_genre" name="genre" type="text"value="{{ show.genre }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_premiered">Premiered</label>
+        <input id="id_premiered" name="premiered" type="text"value="{{ show.premiered }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_rating">Rating</label>
+        <input id="id_rating" name="rating" type="text"value="{{ show.rating }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_mpaa">Viewers</label>
+        <input id="id_mpaa" name="mpaa" type="text"value="{{ show.mpaa }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_studio">Studio</label>
+        <input id="id_studio" name="studio" type="text"value="{{ show.studio }}">
+      </div>
+
+    </div>
+
+  </form>
+
+  <div class="column2">
+	<span>Avaliable genres</span>
+
+    <div class="avail_genres">
+      {% for genre in genres %}
+        <input type="checkbox" value="{{ genre }}" {% if genre in show.genre %}checked="yes"{% endif %}/>{{ genre }}<br/>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="column3">
+    {% if itemart %}
+      <img class="poster" src="{{ itemart }}">
+    {% endif %}
+  </div>
+
+  <div class="choices">
+    <div class="save library_edit">Save</div>
+    <div class="cancel">Cancel</div>
+  </div>
+
+</div>

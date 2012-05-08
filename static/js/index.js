@@ -758,6 +758,60 @@ $(document).ready(function() {
     });
   });
 
+//------edit library info-------//
+
+  $(document).on('click', '#library #edit', function() {
+    var type = $(this).attr('media-type');
+
+    $.get('/xhr/library/' + type + '/edit/' + $(this).data('id'), function(data) {
+      var popup = $(data);
+      $('body').append(popup);
+      popup.showPopup({ dispose: true });
+    });
+  });
+
+  $(document).on('change', '#library_edit_dialog .exist_sets', function() {
+    var value = $(this).val();
+    var sets = $('#id_set');
+
+    if (sets.val().length == 0){
+      sets.val(value);
+    }
+    else {
+      sets.val(sets.val() + ' / ' + value);
+    }
+  });
+
+  function update_genre() {
+    var genres = [];
+
+    $('#library_edit_dialog .avail_genres :checked').each(function() {
+      genres.push($(this).val());
+    });
+
+    var genre_input =  $('#library_edit_dialog #id_genre');
+    genre_input.val(genres);
+    genre_input.val(genre_input.val().replace(/,/g, ' / '));
+  }
+ 
+  $(document).on('click', '#library_edit_dialog .avail_genres input', function() {
+    update_genre();
+  });
+
+  $(document).on('click', '#library_edit_dialog .choices .save', function() {
+    var form = $('#library_edit_dialog form');
+
+    var details = form.serialize();
+    var id = $('#library_edit_dialog #media_id').data('id');
+    var type = $('#library_edit_dialog #media_id').attr('media-type');
+
+    $.post('/xhr/library/' + type + '/set/' + id + '/', details);
+    invoke_library('/xhr/library/' + type + '/info/' + id);
+    $('#library_edit_dialog .close').click();
+  });
+
+//------end edit library info------//
+
 
   /*** SICKBEARD ***/
 

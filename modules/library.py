@@ -8,10 +8,14 @@ from maraschino.noneditable import *
 from maraschino.tools import *
 import maraschino.logger as logger
 
-global vfs_url
 vfs_url = '/xhr/vfs_proxy/'
-global xbmc_error
 xbmc_error = 'There was a problem connecting to the XBMC server'
+
+def frodo_check():
+    xbmc = jsonrpclib.Server(server_api_address())
+    xbmc_version = xbmc.Application.GetProperties(properties=['version'])['version']
+    frodo = xbmc_version['major'] > 11
+    return frodo
 
 @app.route('/xhr/library')
 @requires_auth
@@ -217,6 +221,7 @@ def xhr_library_info_movie(movieid):
         title = title,
         movie = movie,
         itemart = itemart,
+        frodo = frodo_check()
     )
 
 @app.route('/xhr/library/tvshow/info/<int:tvshowid>')
@@ -249,6 +254,7 @@ def xhr_library_info_show(tvshowid):
         show = show,
         itemart = itemart,
         bannerart = bannerart,
+        frodo = frodo_check()
     )
 
 @app.route('/xhr/library/episode/info/<int:episodeid>')
@@ -278,6 +284,7 @@ def xhr_library_info_episode(episodeid):
         title = title,
         episode = episode,
         itemart = itemart,
+        frodo = frodo_check()
     )
 
 @app.route('/xhr/library/artist/info/<int:artistid>')
@@ -307,6 +314,7 @@ def xhr_library_info_artist(artistid):
         title = title,
         artist = artist,
         itemart = itemart,
+        frodo = frodo_check()
     )
 
 @app.route('/xhr/library/album/info/<int:albumid>')
@@ -336,6 +344,7 @@ def xhr_library_info_album(albumid):
         title = title,
         album = album,
         itemart = itemart,
+        frodo = frodo_check()
     )
 
 @app.route('/xhr/library/files/<file_type>')

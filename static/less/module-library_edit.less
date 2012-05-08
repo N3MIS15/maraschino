@@ -1,0 +1,88 @@
+@import "mixins.less";
+
+#library_edit_dialog
+{
+
+  height: 80%;
+  width: 60%;
+
+  h2 {
+    font-size: 30px;
+    margin: 20px 20px;
+  }
+
+  .column1 {
+    position: absolute;
+    width: 40%;
+    max-height: 90%;
+  }
+
+  .column2 {
+    position: absolute;
+    width: 20%;
+    max-height: 90%;
+    margin-left: 43%;
+  }
+
+  .column3 {
+    position: absolute;
+    width: 34%;
+    max-height: 90%;
+    margin-left: 66%;
+  }
+
+  label {
+  width: 20%;
+  }
+
+  input[type=text] {
+    width: 75%
+  }
+
+  .plot,
+  .description {
+    resize: none;
+    float: right;
+    .border-radius(3px);
+    height: 80px;
+    width: 75%;
+    padding: 4px 6px;
+  }
+
+  .poster {
+    width: 80%;
+    height: auto;
+    border: 2px solid #333;
+  }
+
+  .episodeart {
+    position: absolute;
+    width: 196px;
+    height: auto;
+    border: 2px solid #333;
+  }
+
+  .exist_sets {
+    width: 200px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+  }
+
+  .avail_genres {
+    margin-top: 5px;
+    overflow: auto;
+    border: 2px solid #333;
+    .border-radius(3px);
+
+    input[type=checkbox] {
+      margin-right: 15px;
+    }
+  }
+
+  .choices {
+    position: absolute;
+    bottom: 4%;
+    left: 6%;
+  }
+}
+

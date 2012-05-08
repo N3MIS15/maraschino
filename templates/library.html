@@ -299,10 +299,16 @@
       {% if movie.trailer %}
         <a class="info_buttons" id="trailer" data-id="{{ movie.movieid }}" title="Play Trailer">Trailer</a>
       {% endif %}
+      {% if frodo %}
+        <a class="info_buttons" id="edit" media-type="movie" data-id="{{ movie.movieid }}" title="Edit Movie Details">Edit</a>
+      {% endif %}
 
 	{% elif library.tvshowdetails %}
       <a class="info_buttons" id="play" file-type="video" media-type="tvshow" data-id="{{ show.tvshowid }}" title="Play TV show">Play</a>
       <a class="info_buttons" id="queue" file-type="video" media-type="tvshow" data-id="{{ show.tvshowid }}" title="Add to Queue">Queue</a>
+      {% if frodo %}
+        <a class="info_buttons" id="edit" media-type="tvshow" data-id="{{ show.tvshowid }}" title="Edit TV Show Details">Edit</a>
+      {% endif %}
 
 	{% elif library.episodedetails %}
       {% if episode.resume.position >= 1 %}
@@ -310,14 +316,23 @@
       {% endif %}
       <a class="info_buttons" id="play" file-type="video" media-type="episode" data-id="{{ episode.episodeid }}" title="Play Episode">Play</a>
       <a class="info_buttons" id="queue" file-type="video" media-type="episode" data-id="{{ episode.episodeid }}" title="Add to Queue">Queue</a>
+      {% if frodo %}
+        <a class="info_buttons" id="edit" media-type="episode" data-id="{{ episode.episodeid }}" title="Edit Episode Details">Edit</a>
+      {% endif %}
 
 	{% elif library.artistdetails %}
       <a class="info_buttons" id="play" file-type="audio" media-type="artist" data-id="{{ artist.artistid }}" title="Play All Albums">Play</a>
       <a class="info_buttons" id="queue" file-type="audio" media-type="artist" data-id="{{ artist.artistid }}" title="Add to Queue">Queue</a>
+      {% if frodo %}
+        <a class="info_buttons" id="edit" media-type="artist" data-id="{{ artist.artistid }}" title="Edit Artist Details">Edit</a>
+      {% endif %}
 
 	{% elif library.albumdetails %}
       <a class="info_buttons" id="play" file-type="audio" media-type="album" data-id="{{ album.albumid }}" title="Play Album">Play</a>
       <a class="info_buttons" id="queue" file-type="audio" media-type="album" data-id="{{ album.albumid }}" title="Add to Queue">Queue</a>
+      {% if frodo %}
+        <a class="info_buttons" id="edit" media-type="album" data-id="{{ album.albumid }}" title="Edit Album Details">Edit</a>
+      {% endif %}
     {% endif %}
 
 	{% if library.tvshows or library.seasons or library.episodes or library.movies or library.moviedetails or library.tvshowdetails or library.episodedetails or file_type == "video_directory" %}

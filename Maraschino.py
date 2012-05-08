@@ -47,6 +47,7 @@ from modules.controls import *
 from modules.currently_playing import *
 from modules.diskspace import *
 from modules.library import *
+from modules.library_edit import *
 from modules.log import *
 from modules.recently_added import *
 from modules.remote import *

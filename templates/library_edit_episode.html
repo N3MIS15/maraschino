@@ -1,0 +1,75 @@
+<div id="library_edit_dialog" class="dialog">
+
+  <div class="close">x</div>
+
+  <h2>{{ episode.title }}</h2>
+
+  <form method="" action="">
+    <div class="column1">
+
+      <div id="media_id" media-type="episode" data-id="{{ episode.episodeid }}"></div>
+
+      <div class="formrow">
+        <label for="id_title">Title</label>
+        <input id="id_title" name="title" type="text"value="{{ episode.title }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_season">Season</label>
+        <input id="id_season" name="season" type="text"value="{{ episode.season }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_episode">Episode</label>
+        <input id="id_episode" name="episode" type="text"value="{{ episode.episode }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_plot">Plot</label>
+        <textarea class="plot" type="text" id="id_plot" name="plot">{{ episode.plot }}</textarea>
+      </div>
+
+      <div class="formrow">
+        <label for="id_firstaired">First aired</label>
+        <input id="id_firstaired" name="firstaired" type="text"value="{{ episode.firstaired }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_rating">Rating</label>
+        <input id="id_rating" name="rating" type="text"value="{{ episode.rating }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_director">Director</label>
+        <input id="id_director" name="director" type="text"value="{{ episode.director }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_writer">Writer</label>
+        <input id="id_writer" name="writer" type="text"value="{{ episode.writer }}">
+      </div>
+
+    </div>
+
+  </form>
+
+  <div class="column2">
+
+  {% if itemart %}
+    <img class="episodeart" src="{{ itemart }}">
+  {% endif %}
+
+  </div>
+
+  <div class="column3">
+  {% if seasonart %}
+    <img class="poster" src="{{ seasonart }}">
+  {% endif %}
+  </div>
+
+  <div class="choices">
+    <div class="save library_edit">Save</div>
+    <div class="cancel">Cancel</div>
+  </div>
+
+</div>

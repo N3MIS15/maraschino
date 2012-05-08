@@ -1,0 +1,113 @@
+<div id="library_edit_dialog" class="dialog">
+
+  <div class="close">x</div>
+
+  <h2>{{ movie.title }}</h2>
+
+  <form method="" action="">
+    <div class="column1">
+
+      <div id="media_id" media-type="movie" data-id="{{ movie.movieid }}"></div>
+
+      <div class="formrow">
+        <label for="id_title">Title</label>
+        <input id="id_title" name="title" type="text"value="{{ movie.title }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_sorttitle">Sort Title</label>
+        <input id="id_sorttitle" name="sorttitle" type="text"value="{{ movie.sorttitle }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_plot">Plot</label>
+        <textarea class="plot" type="text" id="id_plot" name="plot">{{ movie.plot }}</textarea>
+      </div>
+
+      <div class="formrow">
+        <label for="id_genre">Genres</label>
+        <input id="id_genre" name="genre" type="text"value="{{ movie.genre }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_director">Director</label>
+        <input id="id_director" name="director" type="text"value="{{ movie.director }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_year">Year</label>
+        <input id="id_year" name="year" type="text"value="{{ movie.year }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_rating">Rating</label>
+        <input id="id_rating" name="rating" type="text"value="{{ movie.rating }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_mpaa">Viewers</label>
+        <input id="id_mpaa" name="mpaa" type="text"value="{{ movie.mpaa }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_studio">Studio</label>
+        <input id="id_studio" name="studio" type="text"value="{{ movie.studio }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_tagline">Tagline</label>
+        <input id="id_tagline" name="tagline" type="text"value="{{ movie.tagline }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_imdbnumber"><a href="http://www.imdb.com/title/{{ movie.imdbnumber }}/" target="_blank" title="View on IMDB">IMDB ID</a></label>
+        <input id="id_imdbnumber" name="imdbnumber" type="text"value="{{ movie.imdbnumber }}">
+      </div>
+
+      <div class="formrow">
+        <label for="id_set">Set</label>
+        <input id="id_set" name="set" type="text"value="{% for set in movie.set %}{{ set }}{% if movie.set|count > 1 %} / {% endif %}{% endfor %}" title="Currently you can only add sets, you cannot remove or replace them.">
+      </div>
+
+      <div class="formrow">
+        <label for="id_trailer">Trailer</label>
+        <input id="id_trailer" name="trailer" type="text"value="{{ movie.trailer }}">
+      </div>
+
+    </div>
+
+  </form>
+
+  <div class="column2">
+
+    <span>Existing sets</span>
+
+    <select class="exist_sets">
+      <option value=""></option>
+      {% for set in sets %}
+        <option value="{{  set.label  }}" {% if movie.set.0 == set.label %}selected{%endif%}>{{ set.label }}</option>
+      {% endfor %}
+    </select>
+    <br/>
+	<span>Avaliable genres</span>
+
+    <div class="avail_genres">
+      {% for genre in genres %}
+        <input type="checkbox" value="{{ genre }}" {% if genre in movie.genre %}checked="yes"{% endif %}/>{{ genre }}<br/>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <div class="column3">
+    {% if itemart %}
+      <img class="poster" src="{{ itemart }}">
+    {% endif %}
+  </div>
+
+  <div class="choices">
+    <div class="save library_edit">Save</div>
+    <div class="cancel">Cancel</div>
+  </div>
+
+</div>
