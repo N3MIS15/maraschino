@@ -58,6 +58,7 @@ from modules.traktplus import *
 from modules.transmission import *
 from modules.utorrent import *
 from modules.weather import *
+from modules.xbmc_example import *
 
 @app.route('/')
 @requires_auth

@@ -390,6 +390,14 @@ AVAILABLE_MODULES = [
             },
         ]
     },
+    {
+        'name': 'xbmc_example',
+        'label': 'XBMC Ping Module',
+        'description': 'Ping XBMC Server.',
+        'static': True,
+        'poll': 0,
+        'delay': 0,
+    },
 ]
 
 MISC_SETTINGS = [

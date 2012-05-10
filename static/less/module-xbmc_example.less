@@ -1,0 +1,27 @@
+@import "mixins.less";
+
+#xbmc_example
+{
+  .inner {
+    text-align: center;
+    padding-bottom: 10px;
+
+    p {
+      margin-bottom: 20px;
+    }
+
+    .ping {
+      background: url(/static/images/alpha/fff_10.png);
+      border: 1px solid #222;
+      color: #eee;
+      padding: 6px 8px;
+      height: 20px;
+      line-height: 25px;
+      .border-radius(4px);
+
+      &:hover {
+        background: url(/static/images/alpha/fff_20.png);
+      }
+    }
+  }
+}

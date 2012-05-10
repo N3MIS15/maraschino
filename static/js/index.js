@@ -1788,5 +1788,11 @@ $(document).ready(function() {
     });
   });
 
+  $(document).on('click', '#xbmc_example .ping', function() {
+    $.get('/xhr/xbmc_example/ping', function(data) {
+    $('#xbmc_example').replaceWith(data);
+    });
+  });
+
 
 });

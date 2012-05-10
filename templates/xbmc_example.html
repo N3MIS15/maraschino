@@ -1,0 +1,17 @@
+<div id="xbmc_example" class="module" data-module="xbmc_example">
+
+  <div class="module_settings"><span>Settings</span></div>
+  <div class="module_remove"><span>Remove</span></div>
+
+  <h2>XBMC Ping Pong</h2>
+
+  <div class="inner">
+    {% if result %}
+      <p>Ping result: {{ result }}</p>
+    {% else %}
+      <p>Press the Ping button</p>
+    {% endif %}
+
+    <a class="ping" href="#">PING XBMC</a>
+  </div>
+</div>
