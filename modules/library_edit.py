@@ -7,7 +7,6 @@ from maraschino.noneditable import *
 from maraschino.tools import *
 import maraschino.logger as logger
 
-xbmc = jsonrpclib.Server(server_api_address())
 vfs_url = '/xhr/vfs_proxy/'
 
 video_genres = [
@@ -57,6 +56,8 @@ def xbmc_art(url):
 @app.route('/xhr/library/movie/edit/<int:movieid>')
 @requires_auth
 def xhr_library_edit_movie(movieid):
+    xbmc = jsonrpclib.Server(server_api_address())
+
     properties = [
         'title',
         'sorttitle',
@@ -97,6 +98,7 @@ def xhr_library_edit_movie(movieid):
 @app.route('/xhr/library/movie/set/<int:movieid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_movie(movieid):
+    xbmc = jsonrpclib.Server(server_api_address())
     logger.log('LIBRARY :: Changing movie details', 'INFO')
 
     title = request.form['title']
@@ -139,6 +141,8 @@ def xhr_library_set_movie(movieid):
 @app.route('/xhr/library/tvshow/edit/<int:tvshowid>')
 @requires_auth
 def xhr_library_edit_tvshow(tvshowid):
+    xbmc = jsonrpclib.Server(server_api_address())
+
     properties = [ 
         'title',
         'sorttitle',
@@ -166,6 +170,7 @@ def xhr_library_edit_tvshow(tvshowid):
 @app.route('/xhr/library/tvshow/set/<int:tvshowid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_tvshow(tvshowid):
+    xbmc = jsonrpclib.Server(server_api_address())
     logger.log('LIBRARY :: Changing TV show details', 'INFO')
 
     title = request.form['title']
@@ -195,6 +200,8 @@ def xhr_library_set_tvshow(tvshowid):
 @app.route('/xhr/library/episode/edit/<int:episodeid>')
 @requires_auth
 def xhr_library_edit_episode(episodeid):
+    xbmc = jsonrpclib.Server(server_api_address())
+
     properties = [
         'title',
         'rating',
@@ -226,6 +233,7 @@ def xhr_library_edit_episode(episodeid):
 @app.route('/xhr/library/episode/set/<int:episodeid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_episode(episodeid):
+    xbmc = jsonrpclib.Server(server_api_address())
     logger.log('LIBRARY :: Changing episode details', 'INFO')
 
     title = request.form['title']
@@ -255,6 +263,8 @@ def xhr_library_set_episode(episodeid):
 @app.route('/xhr/library/artist/edit/<int:artistid>')
 @requires_auth
 def xhr_library_edit_artist(artistid):
+    xbmc = jsonrpclib.Server(server_api_address())
+
     properties = [
         'description',
         'instrument',
@@ -285,6 +295,7 @@ def xhr_library_edit_artist(artistid):
 @app.route('/xhr/library/artist/set/<int:artistid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_artist(artistid):
+    xbmc = jsonrpclib.Server(server_api_address())
     logger.log('LIBRARY :: Changing artist details', 'INFO')
 
     description = request.form['description']
@@ -318,6 +329,8 @@ def xhr_library_set_artist(artistid):
 @app.route('/xhr/library/album/edit/<int:albumid>')
 @requires_auth
 def xhr_library_edit_album(albumid):
+    xbmc = jsonrpclib.Server(server_api_address())
+
     properties = [
         'title',
         'description',
@@ -351,6 +364,7 @@ def xhr_library_edit_album(albumid):
 @app.route('/xhr/library/album/set/<int:albumid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_album(albumid):
+    xbmc = jsonrpclib.Server(server_api_address())
     logger.log('LIBRARY :: Changing album details', 'INFO')
 
     title = request.form['title']
