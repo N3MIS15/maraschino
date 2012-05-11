@@ -35,6 +35,11 @@
       </div>
 
       <div class="formrow">
+        <label for="id_born">Born</label>
+        <input id="id_born" name="born" type="text" value="{{ artist.born }}">
+      </div>
+
+      <div class="formrow">
         <label for="id_formed">Formed</label>
         <input id="id_formed" name="formed" type="text" value="{{ artist.formed }}">
       </div>
@@ -52,11 +57,6 @@
       <div class="formrow">
         <label for="id_yearsactive">Years Active</label>
         <input id="id_yearsactive" name="yearsactive" type="text" value="{{ artist.yearsactive }}">
-      </div>
-
-      <div class="formrow">
-        <label for="id_musicbrainzartistid"><a href="http://www.musicbrainz.org/artist/{{ artist.musicbrainzartistid }}/" target="_blank" title="View on MusicBrainz">MusicBrainz ID</a></label>
-        <input id="id_musicbrainzartistid" name="musicbrainzartistid" type="text" value="{{ artist.musicbrainzartistid }}">
       </div>
 
     </div>

@@ -5,6 +5,7 @@ from Maraschino import app
 from settings import *
 from maraschino.noneditable import *
 from maraschino.tools import *
+import maraschino.logger as logger
 
 xbmc = jsonrpclib.Server(server_api_address())
 vfs_url = '/xhr/vfs_proxy/'
@@ -96,6 +97,8 @@ def xhr_library_edit_movie(movieid):
 @app.route('/xhr/library/movie/set/<int:movieid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_movie(movieid):
+    logger.log('LIBRARY :: Changing movie details', 'INFO')
+
     title = request.form['title']
     sorttitle = request.form['sorttitle']
     plot = request.form['plot']
@@ -163,6 +166,8 @@ def xhr_library_edit_tvshow(tvshowid):
 @app.route('/xhr/library/tvshow/set/<int:tvshowid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_tvshow(tvshowid):
+    logger.log('LIBRARY :: Changing TV show details', 'INFO')
+
     title = request.form['title']
     sorttitle = request.form['sorttitle']
     plot = request.form['plot']
@@ -221,6 +226,8 @@ def xhr_library_edit_episode(episodeid):
 @app.route('/xhr/library/episode/set/<int:episodeid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_episode(episodeid):
+    logger.log('LIBRARY :: Changing episode details', 'INFO')
+
     title = request.form['title']
     plot = request.form['plot']
     firstaired = request.form['firstaired']
@@ -278,6 +285,8 @@ def xhr_library_edit_artist(artistid):
 @app.route('/xhr/library/artist/set/<int:artistid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_artist(artistid):
+    logger.log('LIBRARY :: Changing artist details', 'INFO')
+
     description = request.form['description']
     genre = request.form['genre'].split(' / ')
     instrument = request.form['instrument']
@@ -288,9 +297,7 @@ def xhr_library_set_artist(artistid):
     died = request.form['died']
     disbanded = request.form['disbanded']
     yearsactive = request.form['yearsactive']
-    musicbrainzartistid = request.form['musicbrainzartistid']
 
-    '''
     xbmc.AudioLibrary.SetArtistDetails(
         artistid=artistid,
         description=description,
@@ -302,10 +309,8 @@ def xhr_library_set_artist(artistid):
         died=died,
         disbanded=disbanded,
         yearsactive=yearsactive,
-        genre=genre,
-        musicbrainzartistid=musicbrainzartistid
+        genre=genre
     )
-    '''
 
     return jsonify({ 'status': 'successful'})
 
@@ -346,6 +351,8 @@ def xhr_library_edit_album(albumid):
 @app.route('/xhr/library/album/set/<int:albumid>/', methods=['POST'])
 @requires_auth
 def xhr_library_set_album(albumid):
+    logger.log('LIBRARY :: Changing album details', 'INFO')
+
     title = request.form['title']
     description = request.form['description']
     artist = request.form['artist']
@@ -355,11 +362,9 @@ def xhr_library_set_album(albumid):
     style = request.form['style']
     type = request.form['type']
     albumlabel = request.form['albumlabel']
-    rating = float(request.form['rating'])
+    rating = int(float(request.form['rating'])) #need a better solution for this
     year = int(request.form['year'])
-    musicbrainzalbumid = request.form['musicbrainzalbumid']
 
-    '''
     xbmc.AudioLibrary.SetAlbumDetails(
         albumid=albumid,
         title=title,
@@ -373,8 +378,6 @@ def xhr_library_set_album(albumid):
         albumlabel=albumlabel,
         rating=rating,
         year=year,
-        musicbrainzalbumid=musicbrainzalbumid
     )
-    '''
 
     return jsonify({ 'status': 'successful'})
