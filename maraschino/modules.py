@@ -1096,6 +1096,7 @@ def switch_server(server_id=None):
     """
     Switches XBMC servers.
     """
+    from maraschino.xbmc import set_xbmc_server
 
     xbmc_server = XbmcServer.query.get(server_id)
 
@@ -1104,6 +1105,7 @@ def switch_server(server_id=None):
         active_server.value = server_id
         db_session.add(active_server)
         db_session.commit()
+        set_xbmc_server()
         logger.log('Switched active server to ID %s' % server_id , 'INFO')
 
     except:

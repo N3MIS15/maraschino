@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 """Ressources to use Maraschino on mobile devices"""
 
-import jsonrpclib
-
-from flask import Flask, render_template
+from flask import render_template
 from maraschino import app, logger
-
-from maraschino.tools import *
-from maraschino.noneditable import *
+from maraschino.tools import requires_auth
 from modules.recently_added import get_recently_added_episodes
 import maraschino
 
@@ -20,7 +16,7 @@ def mobile_index():
 @requires_auth
 def recently_added_episodes():
     try:
-        xbmc = jsonrpclib.Server(server_api_address())
+        xbmc = maraschino.XBMC
         recently_added_episodes = xbmc.VideoLibrary.GetRecentlyAddedEpisodes(properties = ['title', 'season', 'episode', 'showtitle', 'playcount', 'thumbnail', 'firstaired'])['episodes']
 
     except:
