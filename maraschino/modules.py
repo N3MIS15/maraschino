@@ -1039,6 +1039,9 @@ def server_settings_dialog(server_id=None):
 
             active_server = int(get_setting_value('active_server'))
 
+            if active_server == server.id:
+                switch_server(server.id)
+
             return render_template('includes/servers.html',
                 servers=XbmcServer.query.order_by(XbmcServer.position),
                 active_server=active_server
