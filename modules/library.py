@@ -144,13 +144,14 @@ def xhr_library_artist(artist):
 
     params = {
         'sort': {'method': 'year'},
-        'properties': ['artistid', 'title', 'artist', 'year']
+        'properties': ['title', 'artist', 'year']
         }
 
     if maraschino.XBMC_VERSION > 11:
         params['filter'] = {'artistid':artist}
     else:
         params['artistid'] =  artist
+        properties.append('artistid')
 
     try:
         library = xbmc.AudioLibrary.GetAlbums(**params)
@@ -174,7 +175,7 @@ def xhr_library_album(artist, album):
 
     params = {
         'sort': {'method': 'track'},
-        'properties': ['artistid', 'artist', 'album', 'track', 'playcount', 'year']
+        'properties': ['artist', 'album', 'track', 'playcount', 'year']
     }
 
     if maraschino.XBMC_VERSION > 11:
@@ -185,6 +186,7 @@ def xhr_library_album(artist, album):
     else:
         params['artistid'] = artist
         params['albumid'] = album
+        properties.append('artistid')
 
     try:
         library = xbmc.AudioLibrary.GetSongs(**params)
@@ -229,7 +231,11 @@ def xhr_library_info(type, id):
             title = library['artistdetails']['label']
 
         elif type == 'album':
-            library = xbmc.AudioLibrary.GetAlbumDetails(albumid=id, properties=['artistid', 'title', 'artist', 'year', 'genre', 'description', 'albumlabel', 'rating', 'thumbnail'])
+            properties = ['title', 'artist', 'year', 'genre', 'description', 'albumlabel', 'rating', 'thumbnail']
+            if maraschino.XBMC_VERSION < 12:
+                properties.append('artistid')
+
+            library = xbmc.AudioLibrary.GetAlbumDetails(albumid=id, properties=properties, dev=True)
             title = library['albumdetails']['title']
 
     except:
