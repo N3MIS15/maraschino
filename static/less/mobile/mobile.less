@@ -1,8 +1,7 @@
 @import "../mixins.less";
 @import "../webroot.less";
 
-
-
+.ui-dialog.my-dialog .ui-dialog-contain { margin-top: 0 }
 
 /*--- header ---*/
 
@@ -71,3 +70,103 @@
         }
     }
 }
+
+/*--- recently added movies and movie library---*/
+
+#recent_movies, #movie_library {
+    li {
+        height: 75px;
+    }
+    .inner {
+        line-height: 60px;
+        padding-left: 70px;
+
+        .thumb {
+            height: 75px;
+            left: 1px;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            width: 150px;
+
+            img {
+                height: 75px;
+            }
+        }
+
+        span.title{
+            width: 80%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        span.rating {
+            float: right;
+        }
+    }
+}
+
+/*--- recently added albums ---*/
+
+#recent_albums {
+    .inner {
+        padding-left: 95px;
+        height: 80px;
+        .thumb {
+            left: 1px;
+            overflow: hidden;
+            position: absolute;
+            width: 85px;
+            height: 85px;
+
+            img {
+                height: 85px;
+            }
+        }
+    }
+}
+
+#movie_library {
+    .inner {
+        padding-left: 10px;
+    }
+}
+
+/*--- tv shows library---*/
+
+#tv_library {
+    li {
+        width: 100%;
+        // padding: 0px;
+        // a.inner {
+        //     width: 100%;
+        //     padding: 0px;
+        //     img {
+        //         width: 100%;
+        //     }
+        // }
+
+    }
+}
+
+/*--- sickbeard coming_episodes ---*/
+
+#coming_episodes {
+    .inner {
+        .thumb {
+            height: 75px;
+            left: 1px;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            width: 75px;
+
+            img {
+                height: 75px;
+                margin-left: -50%;
+            }
+        }
+    }
+}
+

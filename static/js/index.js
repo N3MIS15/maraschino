@@ -1,6 +1,8 @@
 $(document).ready(function() {
   // helper functions
   var settings_buttons = '<div class="module_settings"><span>Settings</span></div><div class="module_remove"><span>Remove</span></div>';
+  // where all polls will reside
+  var timeOuts = new Array([]);
 
   function construct_inactive_module(name, title) {
     return '<div id="' + name + '_inactive" class="inactive_module" data-module="' + name + '">' + settings_buttons + '<h2>' + title + '</h2></div></div>';
@@ -107,8 +109,8 @@ $(document).ready(function() {
     if (settings.poll !== 0) {
       var timer = module+'_timer';
       if(timer){
-        clearTimeout(window[timer]);
-        window[timer] = setTimeout(function() {
+        clearTimeout(timeOuts[timer]);
+        timeOuts[timer] = setTimeout(function() {
           get_module(module, {
             poll: settings.poll,
             params: [settings.params]
@@ -146,7 +148,7 @@ $(document).ready(function() {
 
   var currently_playing_id = null;
 
-  function get_currently_playing() {
+  function get_currently_playing(visibility) {
     $.get(WEBROOT + '/xhr/currently_playing', function(data) {
       var module;
       if (data.playing === false) {
@@ -180,6 +182,9 @@ $(document).ready(function() {
           $('#currently_playing').slideDown(200);
         }
 
+        if(visibility == 'minimize'){
+          $('#currently_playing').addClass('minimize');
+        }
         // use fanart of currently playing item as background if enabled in settings
 
         if ($('body').data('fanart_backgrounds') === 'True') {
@@ -241,12 +246,18 @@ $(document).ready(function() {
             placeholder: $('#trakt_inactive')
           });
         }
-
         currently_playing_id = $(data).data('id');
       }
     });
-
-    setTimeout(get_currently_playing, 5000);
+    if (visibility == 'minimize') {
+      timeOuts['currently_playing'] = setTimeout(function() {
+        get_currently_playing('minimize');
+      }, 5000);
+    } else {
+      timeOuts['currently_playing'] = setTimeout(function() {
+        get_currently_playing();
+      }, 5000);
+    }
   }
 
   // Currently playing playlist
@@ -297,9 +308,16 @@ $(document).ready(function() {
   $(document).on('click', '#currently_playing .progress', function(e){
     var x = e.pageX - $(this).offset().left;
     var percent = Math.round((x / $(this).width())*100);
+    var minimized = false;
+    if($('#currently_playing').hasClass('minimize')){
+      minimized = true;
+    }
     $.get(WEBROOT + '/xhr/controls/seek_'+percent);
     $.get(WEBROOT + '/xhr/currently_playing', function(data){
       $('#currently_playing').replaceWith(data);
+      if(minimized){
+        $('#currently_playing').addClass('minimize');
+      }
     });
   });
 
@@ -368,6 +386,10 @@ $(document).ready(function() {
 
   $(document).on('click', '#currently_playing .controls > div', function() {
     var command = $(this).data('command');
+    var minimized = false;
+    if($('#currently_playing').hasClass('minimize')){
+      minimized = true;
+    }
     $.get(WEBROOT + '/xhr/controls/' + command);
     $.get(WEBROOT + '/xhr/currently_playing', function(data) {
       if (data.playing === false) {
@@ -377,6 +399,7 @@ $(document).ready(function() {
       } else {
         $('#currently_playing').replaceWith(data);
       }
+      if(minimized){$('#currently_playing').addClass('minimize');}
     });
   });
 
@@ -434,6 +457,25 @@ $(document).ready(function() {
       }
     });
   }
+
+  // currently playing close
+  $(document).on('click', '#currently_playing .visibility .close', function() {
+    $('#currently_playing').slideUp(200, function() {
+      $(this).remove();
+      clearTimeout(timeOuts['currently_playing']);
+    });
+  });
+
+  // currently playing minimize
+  $(document).on('click', '#currently_playing .visibility .minimize', function() {
+    $('#currently_playing').toggleClass('minimize');
+    clearTimeout(timeOuts['currently_playing']);
+    if($('#currently_playing').hasClass('minimize')){
+      get_currently_playing('minimize');
+    } else {
+      get_currently_playing();
+    }
+  });
 
   // Filter function
 
@@ -2603,7 +2645,7 @@ $(document).ready(function() {
     var popup = $('<div id="updater" class="dialog" align="center"><div class="close" style="display:none;"></div><p>Restarting  <img src="' + WEBROOT + '/static/images/xhrloading.gif"/></p></div>');
     $('body').append(popup);
     popup.showPopup({ dispose: true });
-
+    stop_polling();
     $.get(WEBROOT + '/xhr/restart', function(data){
       if(data['restart_complete']){
         setTimeout(
@@ -2620,6 +2662,7 @@ $(document).ready(function() {
     var popup = $('<div id="updater" class="dialog" align="center"><div class="close" style="display:none;"></div><p>Maraschino is shutting down...</p></div>');
     $('body').append(popup);
     popup.showPopup({ dispose: true });
+    stop_polling();
     $.get(WEBROOT + '/xhr/shutdown', function(data){
       if(data['shutdown_complete']){
         window.open('', '_self', '');
@@ -2817,4 +2860,10 @@ $(document).ready(function() {
     $(this).children().replaceWith('<img src="' + WEBROOT + '/static/images/xhrloading.gif" width="14" height="14">');
   });
 
+  // Quit module polling
+  function stop_polling(){
+    for (var key in timeOuts) {
+      clearTimeout(timeOuts[key]);
+    }
+  }
 });
