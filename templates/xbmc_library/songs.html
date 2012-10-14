@@ -1,0 +1,21 @@
+{% extends "xbmc_library/base.html" %}
+
+{% block xbmc_library_title %}{{ library.0.album }}{% endblock %}
+
+{% block xbmc_library_content %}
+  <div class="get back" data-url="/albums?artistid={{ library.0.artistid }}">&laquo;</div>
+
+  <div
+    id="content"
+    data-media="songs"
+    data-url="/albums?artistid={{ library.0.artistid }}&albumid={{ library.0.albumid }}"
+  >
+    {% include "xbmc_library/list_view.html" %}
+    {% include "xbmc_library/filter.html" %}
+  </div>
+
+  <div id="settings">
+    {% include "xbmc_library/settings.html" %}
+  </div>
+
+{% endblock %}

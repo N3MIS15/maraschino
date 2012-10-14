@@ -1,0 +1,31 @@
+<ul class="banner_view">
+  {% for item in library %}
+    <li data-index="{{ item.index }}" {% include "xbmc_library/item_properties.html" %}>
+      <div
+        {% if media == 'seasons' %}
+          id="{{ item.season }}"
+        {% else %}
+          id="{{ item[media[:-1]+'id'] }}"
+        {% endif %}
+      >
+
+        {% if item.thumbnail %}
+          <img
+            class="banner"
+            {% if 'art' in item and 'banner' in item.art %}
+              src="{{ item.art.banner|xbmc_image }}"
+            {% else %}
+              src="{{ item.thumbnail|xbmc_image }}"
+            {% endif %}
+          >
+        {% endif %}
+
+        {{ item.label }}
+
+        {% if item.playcount %}
+          <img class="watched" src="{{ url_for('static', filename='images/tick.png') }}">
+        {% endif %}
+      </div>
+    </li>
+  {% endfor %}
+</ul>

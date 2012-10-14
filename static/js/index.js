@@ -3036,4 +3036,47 @@ $(document).ready(function() {
       clearTimeout(timeOuts[key]);
     }
   }
+
+
+// browse XBMC library
+
+  $(document).on('click', '#xbmc_library .get', function() {
+    var url = $(this).data('url');
+    url = WEBROOT + '/xhr/xbmc_library' + url;
+
+    $('#xbmc_library .back').hide();
+    $('#xbmc_library .xhrloading').show();
+
+    $.get(url, function(data) {
+      $('#xbmc_library').replaceWith(data);
+    });
+  });
+
+  $(document).on('click', '#xbmc_library #settings .choices .save', function() {
+    var settings = $('#xbmc_library #settings').find('form').serializeArray();
+    var media = $('#xbmc_library #content').data('media');
+    var url = $('#xbmc_library #content').data('url');
+    url = WEBROOT + '/xhr/xbmc_library' + url;
+    button = $(this);
+
+    add_loading_gif(button);
+
+    $.post(
+      WEBROOT + '/xhr/xbmc_library/save/'+media+'/',
+      {settings: JSON.stringify(settings)},
+      function(data) {
+        if (data.success) {
+          $.get(url, function(data) {
+            $('#xbmc_library').replaceWith(data);
+            toggle_settings_mode();
+          });
+        }
+        else {
+          popup_message('Failed to save '+media+' settings');
+          remove_loading_gif(button);
+        }
+      }
+    );
+  });
+
 });

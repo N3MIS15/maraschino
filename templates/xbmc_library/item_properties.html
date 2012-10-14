@@ -1,0 +1,36 @@
+{% if media == 'movies' or media == 'episodes' %}
+
+  {% if show_info %}
+    {% set action = 'info' %}
+  {% else %}
+    {% set action = 'resume_check' %}
+  {% endif %}
+
+{% elif media == 'songs' %}
+  {% set action = 'play' %}
+
+{% else %}
+  {% set action = 'get' %}
+{% endif %}
+
+
+{% if view == 'large_list' or view == 'banner' %}
+	class="{{ action }} large"
+{% elif view == 'poster' %}
+	class="{{ action }} poster"
+{% else %}
+	class="{{ action }}"
+{% endif %}
+
+file-type="{{ file }}"
+media-type="{{ media[:-1] }}"
+
+{% if media == 'tvshows' %}
+	data-url="/seasons?tvshowid={{ item.tvshowid }}"
+{% elif media == 'seasons' %}
+	data-url="/episodes?tvshowid={{ item.tvshowid }}&season={{ item.season }}"
+{% elif media == 'artists' %}
+  data-url="/albums?artistid={{ item.artistid }}"
+{% elif media == 'albums' %}
+  data-url="/songs?artistid={{ item.artistid }}&albumid={{ item.albumid }}"
+{% endif %}

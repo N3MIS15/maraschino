@@ -1,0 +1,32 @@
+<div class="poster_view">
+  <div class="inner">
+    {% for item in library %}
+      <div {% include "xbmc_library/item_properties.html" %}>
+        <div
+          {% if media == 'seasons' %}
+            id="{{ item.season }}"
+          {% else %}
+            id="{{ item[media[:-1]+'id'] }}"
+          {% endif %}
+        >
+          {% if item.thumbnail %}
+            <img
+              {% if 'art' in item and 'poster' in item.art %}
+                src="{{ item.art.poster|xbmc_image }}"
+              {% else %}
+                src="{{ item.thumbnail|xbmc_image }}"
+              {% endif %}
+              class="poster"
+            >
+          {% endif %}
+
+          {{ item.label }}
+
+          {% if item.playcount %}
+            <img class="watched" src="{{ url_for('static', filename='images/tick.png') }}">
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>

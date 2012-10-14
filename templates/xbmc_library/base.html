@@ -1,0 +1,20 @@
+<div id="xbmc_library" class="module" data-module="xbmc_library">
+
+  <div class="module_settings"><span>Settings</span></div>
+  <div class="module_remove"><span>Remove</span></div>
+
+  <h2>
+    {% block xbmc_library_title %}XBMC Library{% endblock %}
+  </h2>
+
+  <img class="xhrloading" src="{{ url_for('static', filename='images/xhrloading.gif') }}" />
+
+  {% block xbmc_library_header %}{% endblock %}
+
+  {% block xbmc_library_content %}{% endblock %}
+
+  {% if message %}
+    <div class="message">{{ message }}</div>
+  {% endif %}
+
+</div>

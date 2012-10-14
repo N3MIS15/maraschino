@@ -674,6 +674,40 @@ AVAILABLE_MODULES = [
             },
         ]
     },
+    {
+        'name': 'xbmc_library',
+        'label': 'XBMC Library',
+        'description': 'Allows you to browse your XBMC library and select items to play in XBMC.',
+        'static': True,
+        'poll': 0,
+        'delay': 0,
+        'settings': [
+            {
+                'key': 'xbmc_library_show_info',
+                'value': '0',
+                'description': 'Show media information by default',
+                'type': 'bool',
+            },
+            {
+                'key': 'xbmc_library_ignore_the',
+                'value': '1',
+                'description': 'Ignore "The" in titles',
+                'type': 'bool',
+            },
+            {
+                'key': 'xbmc_library_show_music',
+                'value': '1',
+                'description': 'Show music',
+                'type': 'bool',
+            },
+            {
+                'key': 'xbmc_library_show_files',
+                'value': '1',
+                'description': 'Show files',
+                'type': 'bool',
+            },
+        ]
+    },
 ]
 
 MISC_SETTINGS = [

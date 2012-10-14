@@ -1,0 +1,34 @@
+{% extends "xbmc_library/base.html" %}
+
+{% block xbmc_library_title %}
+  {{library.0.showtitle }} - Season{{ library.0.season }}
+{% endblock %}
+
+{% block xbmc_library_content %}
+  <div class="get back" data-url="/seasons?tvshowid={{ library.0.tvshowid }}">&laquo;</div>
+
+  <div 
+    id="content"
+    data-media="episodes"
+    data-url="/episodes?tvshowid={{ library.0.tvshowid }}&season={{ library.0.season }}"
+  >
+    {% if view == 'list' %}
+      {% include "xbmc_library/list_view.html" %}
+
+    {% elif view == 'large_list' %}
+      {% include "xbmc_library/large_list_view.html" %}
+
+    {% elif view == 'thumbnail' %}
+      {% include "xbmc_library/thumbnail_view.html" %}
+
+    {% endif %}
+
+    {% include "xbmc_library/filter.html" %}
+  </div>
+
+  <div id="settings">
+    {% include "xbmc_library/settings.html" %}
+  </div>
+
+  {% include "xbmc_library/back_position.html" %}
+{% endblock %}

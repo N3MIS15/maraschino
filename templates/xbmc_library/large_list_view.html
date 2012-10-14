@@ -1,0 +1,63 @@
+<ul class="list_view">
+  {% for item in library %}
+    <li {% include "xbmc_library/item_properties.html" %}>
+      <div
+        {% if media == 'seasons' %}
+          id="{{ item.season }}"
+        {% else %}
+          id="{{ item[media[:-1]+'id'] }}"
+        {% endif %}
+      >
+        {% if item.thumbnail %}
+          <img
+            {% if media == 'episodes' %}
+              class="thumbnail"
+            {% elif media == 'artists' or media == 'albums' %}
+              class="square"
+            {% else %}
+              class="poster"
+            {% endif %}
+            src="{{ item.thumbnail|xbmc_image }}"
+          >
+        {% endif %}
+        <div
+          {% if media == 'episodes' %} 
+            class="details thumbnail"
+          {% elif media == 'artists' or media == 'albums' %}
+            class="details square"
+          {% else %}
+            class="details"
+          {% endif %}
+        >
+          <span class="title">
+            {{ item.label }}
+          </span><br />
+
+          <span>
+            {% if item.year %}
+              Year: {{ item.year }}
+            {% elif item.premiered %}
+              Premiered: {{ item.premiered }}
+            {% elif item.firstaired %}
+              First Aired: {{ item.firstaired }}
+            {% elif item.episode %}
+              {{ item.episode }} episodes
+            {% endif %}
+          </span><br />
+
+          <span>
+            {% if item.rating %}
+              Rating: {{ item.rating|float|round(1, 'common') }}
+            {% elif item.episode %}
+              {{ item.watched }} watched
+            {% endif %}
+          </span>
+        </div>
+
+        {% if item.playcount %}
+          <img class="watched" src="{{ url_for('static', filename='images/tick.png') }}">
+        {% endif %}
+      </div>
+    </li>
+  {% endfor %}
+</ul>
