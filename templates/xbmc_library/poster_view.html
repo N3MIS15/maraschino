@@ -11,16 +11,18 @@
             id="{{ item[media[:-1]+'id'] }}"
           {% endif %}
         >
-          {% if item.thumbnail %}
-            <img
-              {% if 'art' in item and 'poster' in item.art %}
-                src="{{ item.art.poster|xbmc_image }}"
-              {% else %}
-                src="{{ item.thumbnail|xbmc_image }}"
-              {% endif %}
-              class="poster"
-            >
+        <!-- FRODO -->
+        {% if 'art' in item %}
+          {% if 'poster' in item.art %}
+            <img class="poster" src="{{ item.art.poster|xbmc_image }}">
           {% endif %}
+
+        <!-- EDEN -->
+        {% else %}
+          {% if item.thumbnail %}
+            <img class="poster" src="{{ item.thumbnail|xbmc_image }}">
+          {% endif %}
+        {% endif %}
 
           {{ item.label }}
 

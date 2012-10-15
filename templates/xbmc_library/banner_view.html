@@ -9,15 +9,17 @@
         {% endif %}
       >
 
-        {% if item.thumbnail %}
-          <img
-            class="banner"
-            {% if 'art' in item and 'banner' in item.art %}
-              src="{{ item.art.banner|xbmc_image }}"
-            {% else %}
-              src="{{ item.thumbnail|xbmc_image }}"
-            {% endif %}
-          >
+        <!-- FRODO -->
+        {% if 'art' in item %}
+          {% if 'banner' in item.art %}
+            <img class="banner" src="{{ item.art.banner|xbmc_image }}">
+          {% endif %}
+
+        <!-- EDEN -->
+        {% else %}
+          {% if item.thumbnail %}
+            <img class="banner" src="{{ item.thumbnail|xbmc_image }}">
+          {% endif %}
         {% endif %}
 
         {{ item.label }}
