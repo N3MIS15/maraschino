@@ -1,6 +1,8 @@
 {% if media == 'movies' or media == 'episodes' %}
 
-  {% if show_info %}
+  {% if 'setid' in item %}
+    {% set action = 'get movieset' %}
+  {% elif show_info %}
     {% set action = 'info' %}
   {% else %}
     {% set action = 'resume_check' %}
@@ -25,7 +27,9 @@
 file-type="{{ file }}"
 media-type="{{ media[:-1] }}"
 
-{% if media == 'tvshows' %}
+{% if media == 'movies' and 'setid' in item %}
+  data-url="/moviesets?setid={{ item.setid }}"
+{% elif media == 'tvshows' %}
 	data-url="/seasons?tvshowid={{ item.tvshowid }}"
 {% elif media == 'seasons' %}
 	data-url="/episodes?tvshowid={{ item.tvshowid }}&season={{ item.season }}"

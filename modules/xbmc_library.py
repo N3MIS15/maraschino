@@ -4,10 +4,11 @@ from maraschino.models import Setting
 from maraschino.database import db_session
 from maraschino.tools import requires_auth, get_setting, get_setting_value
 from maraschino import app, logger
-import jsonrpclib
+import jsonrpclib, random
 
 xbmc_error = 'There was a problem connecting to the XBMC server'
 back_id = {
+    'movies': None,
     'tvshows': None,
     'seasons': None,
     'episodes': None,
@@ -285,6 +286,9 @@ def get_xbmc_media_settings(media_type):
     '''
     Return settings for media type.
     '''
+    if media_type == 'moviesets':
+        media_type = 'movies'
+
     settings = library_settings[media_type]
 
     for s in settings:
@@ -354,9 +358,6 @@ def xhr_xbmc_library_media(media_type=None):
 
     if not server_api_address():
         logger.log('LIBRARY :: No XBMC server defined', 'ERROR')
-        for item in back_id:
-            back_id[item] = None
-
         return render_xbmc_library(message="You need to configure XBMC server settings first.")
 
     try:
@@ -371,6 +372,12 @@ def xhr_xbmc_library_media(media_type=None):
         if media_type == 'movies':
             library = xbmc_get_movies(xbmc)
             file_type = 'video'
+
+        elif media_type == 'moviesets':
+            setid = int(request.args['setid'])
+            library = xbmc_get_moviesets(xbmc, setid)
+            file_type = 'video'
+            back_id['movies'] = request.args['setid']
 
         elif media_type == 'tvshows':
             library = xbmc_get_tvshows(xbmc)
@@ -389,7 +396,6 @@ def xhr_xbmc_library_media(media_type=None):
             file_type = 'video'
             back_id['tvshows'] = request.args['tvshowid']
             back_id['seasons'] = request.args['season']
-            back_pos = back_id['seasons']
 
         elif media_type == 'artists':
             library = xbmc_get_artists(xbmc)
@@ -411,7 +417,10 @@ def xhr_xbmc_library_media(media_type=None):
 
         template = 'xbmc_library/%s.html' % media_type
         settings = get_xbmc_media_settings(media_type)
-        view = get_setting_value('xbmc_%s_view' % media_type)
+        if media_type == 'moviesets':
+            view = get_setting_value('xbmc_movies_view')
+        else:
+            view = get_setting_value('xbmc_%s_view' % media_type)
 
         if media_type in back_id:
             back_pos = back_id[media_type]
@@ -436,16 +445,86 @@ def xbmc_get_movies(xbmc):
     logger.log('LIBRARY :: Retrieving movies', 'INFO')
 
     sort = xbmc_sort('movies')
-    properties = ['playcount', 'thumbnail', 'year', 'rating']
+    properties = ['playcount', 'thumbnail', 'year', 'rating', 'set']
     view = get_setting_value('xbmc_movies_view')
 
     movies = xbmc.VideoLibrary.GetMovies(sort=sort, properties=properties)['movies']
+
+    if get_setting_value('xbmc_movies_view_sets') == '1':
+        movies = xbmc_movies_with_sets(xbmc, movies)
 
     if get_setting_value('xbmc_movies_hide_watched') == '1':
         movies = [x for x in movies if not x['playcount']]
 
     return movies
 
+
+def xbmc_movies_with_sets(xbmc, movies):
+    sort = xbmc_sort('movies')
+    sets = xbmc.VideoLibrary.GetMovieSets(sort=sort, properties=['thumbnail', 'playcount'])['sets']
+
+    #Find movies with sets and copy them into the set
+    for i in range(len(movies)):
+        if movies[i]['set']:
+            for set in sets:
+                if not 'movies' in set:
+                    set['movies'] = []
+
+                if set['label'] == movies[i]['set']:
+                    set['movies'].append(movies[i])
+
+    #Add year and rating properties to set
+    for set in sets:
+        years = []
+        ratings = []
+        for movie in set['movies']:
+            years.append(movie['year'])
+            ratings.append(movie['rating'])
+
+        set['year'] = max(years)
+        set['rating'] = float(sum(ratings))/len(ratings)
+
+    #Remove movies in sets from movies list
+    movies = [x for x in movies if not x['set']]
+    #Add the movie sets to the movie list
+    movies.extend(sets)
+
+    #We need to re-sort the movies after adding sets
+    if sort['method'] != 'random':
+        if sort['order'] == 'ascending':
+            movies = sorted(movies, key=lambda k: k[sort['method']])
+        else:
+            movies = sorted(movies, key=lambda k: k[sort['method']], reverse=True)
+    else:
+        movies = random.shuffle(movies)
+
+    return movies
+
+
+def xbmc_get_moviesets(xbmc, setid):
+    logger.log('LIBRARY :: Retrieving movie set: %s' % setid, 'INFO')
+    version = xbmc.Application.GetProperties(properties=['version'])['version']['major']
+
+    sort = xbmc_sort('movies')
+    view = get_setting_value('xbmc_movies_view')
+    properties = ['playcount', 'thumbnail', 'year', 'rating', 'set']
+    params = {'sort': sort, 'properties': properties}
+    #Frodo
+    if version > 11:
+        params['filter'] = {'setid':setid}
+
+    movies = xbmc.VideoLibrary.GetMovies(**params)['movies']
+
+    if version == 11:
+        #UNTESTED
+        movies = [x for x in movies if 'setid' in x and x['setid'] == setid]
+
+    if get_setting_value('xbmc_movies_hide_watched') == '1':
+        movies = [x for x in movies if not x['playcount']]
+
+    movies[0]['setid'] = setid
+    movies[0]['setlabel'] = movies[0]['set']
+    return movies
 
 def xbmc_get_tvshows(xbmc):
     logger.log('LIBRARY :: Retrieving TV shows', 'INFO')

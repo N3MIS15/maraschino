@@ -5,6 +5,8 @@
         <div
           {% if media == 'seasons' %}
             id="{{ item.season }}"
+          {% elif media == 'movies' and 'setid' in item %}
+            id="set{{ item.setid }}"
           {% else %}
             id="{{ item[media[:-1]+'id'] }}"
           {% endif %}

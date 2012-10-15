@@ -1,0 +1,28 @@
+{% extends "xbmc_library/base.html" %}
+
+{% block xbmc_library_title %}{{ library.0.setlabel }}{% endblock %}
+
+{% block xbmc_library_content %}
+  <div class="get back" data-url="/movies">&laquo;</div>
+
+  <div id="content" data-media="movies" data-url="/moviesets?setid={{ library.0.setid }}">
+    {% if view == 'list' %}
+      {% include "xbmc_library/list_view.html" %}
+
+    {% elif view == 'large_list' %}
+      {% include "xbmc_library/large_list_view.html" %}
+
+    {% elif view == 'poster' %}
+      {% include "xbmc_library/poster_view.html" %}
+
+    {% endif %}
+
+    {% include "xbmc_library/filter.html" %}
+  </div>
+
+  <div id="settings">
+    {% include "xbmc_library/settings.html" %}
+  </div>
+
+  {% include "xbmc_library/back_position.html" %}
+{% endblock %}
