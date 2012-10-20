@@ -4,7 +4,12 @@
 
 <div class="get back" data-url="{{ back_path }}">&laquo;</div>
 
-  <div class="media_details">
+  <div 
+    class="media_details"
+    media-type="{{media[:-1]}}"
+    file-type="{{ file }}"
+    data-id="{{ library[media[:-1]+'id'] }}"
+  >
     {% if library.thumbnail %}
       <img
         {% if media == 'episodes' %}
@@ -23,24 +28,57 @@
 
       <table border="0">
         <tr>
-          <td width="75" style="font-weight:bold;">Director:</td>
-          <td style="font-size: 0.950em;">{{ library.director }}</td>
+          <td>Director:</td>
+          <td>{{ library.director }}</td>
         </tr>
         <tr>
-          <td style="font-weight:bold;">Year:</td>
-          <td style="font-size: 0.950em;">{{ library.year }}</td>
+          <td>Year:</td>
+          <td>{{ library.year }}</td>
         </tr>
         <tr>
-          <td style="font-weight:bold;">Genre:</td>
-          <td style="font-size: 0.950em;">{{ library.genre|truncate(30, 'false') }}</td>
+          <td>Genre:</td>
+          <td>{{ library.genre|truncate(30, 'false') }}</td>
         </tr>
         <tr>
-          <td style="font-weight:bold;">Rating:</td>
-          <td style="font-size: 0.950em;">{{ library.rating|float|round(1, 'common') }} / 10</td>
+          <td>Rating:</td>
+          <td>{{ library.rating|float|round(1, 'common') }} / 10</td>
         </tr>
       </table>
-      <br /><span style="font-weight:bold;">Plot:</span>
-      <br /><span style="font-size: 0.950em;">{{ library.plot }}</span>
+      <br /><span><b>Plot:</b></span>
+      <br /><p align="left">{{ library.plot }}</p>
+  </div>
+
+{% endblock %}
+
+{% block power_holder %}
+  {% if file == 'video' %}
+    <div class="power" title="Update Video Library" id="video-update">
+      <img src="{{ url_for('static', filename='images/refresh.png') }}"/>
+    </div>
+    <div class="power" title="Clean Video Library" id="video-clean">
+      <img src="{{ url_for('static', filename='images/clean.png') }}"/>
+    </div>
+
+  {% elif file == 'audio' %}
+    <div class="power" title="Update Music Library" id="audio-update">
+      <img src="{{ url_for('static', filename='images/refresh.png') }}"/>
+    </div>
+    <div class="power" title="Clean Music Library" id="audio-clean">
+      <img src="{{ url_for('static', filename='images/clean.png') }}"/>
+    </div>
+  {% endif %}
+
+  <div class="info_buttons">
+    {% if 'resume' in library and library.resume.position >= 1 %}
+      <a class="resume button">Resume</a>
+    {% endif %}
+
+    <a class="play button">Play</a>
+    <a class="queue button">Queue</a>
+
+    {% if 'trailer' in library and library.trailer %}
+      <a class="trailer button">Trailer</a>
+    {% endif %}
   </div>
 
 {% endblock %}

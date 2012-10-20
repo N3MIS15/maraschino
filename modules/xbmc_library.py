@@ -2,7 +2,7 @@ from flask import render_template, jsonify, request, json
 from maraschino.noneditable import server_api_address
 from maraschino.models import Setting
 from maraschino.database import db_session
-from maraschino.tools import requires_auth, get_setting, get_setting_value
+from maraschino.tools import requires_auth, get_setting, get_setting_value, natural_sort
 from maraschino import app, logger
 import jsonrpclib, random
 
@@ -253,18 +253,6 @@ library_settings = {
 
     'songs': [
         {
-            'key': 'xbmc_songs_sort',
-            'value': 'track',
-            'description': 'Sort albums by',
-            'type': 'select',
-            'options': [
-                {'value': 'label', 'label': 'Title'},
-                {'value': 'rating', 'label': 'Rating'},
-                {'value': 'track', 'label': 'Track'},
-                {'value': 'random', 'label': 'Random'},
-            ]
-        },
-        {
             'key': 'xbmc_albums_sort_order',
             'value': 'ascending',
             'description': 'Sort direction',
@@ -382,7 +370,7 @@ def xhr_xbmc_library_media(media_type=None):
                 title = '%s (%s)' % (library['label'], library['year'])
                 back_path = '/movies'
 
-            if 'setid' in request.args: #Movie set
+            elif 'setid' in request.args: #Movie set
                 setid = request.args['setid']
                 back_id['movies'] = 'set' + setid
                 library = xbmc_get_moviesets(xbmc, int(setid))
@@ -442,7 +430,7 @@ def xhr_xbmc_library_media(media_type=None):
 
             else:
                 library = xbmc_get_episodes(xbmc, int(tvshowid), int(season))
-                title = '%s - Season%s' % (library[0]['showtitle'], library[0]['season'])
+                title = '%s - Season %s' % (library[0]['showtitle'], library[0]['season'])
                 back_path = '/seasons?tvshowid=%s' % tvshowid
 
 
@@ -531,23 +519,21 @@ def xbmc_get_movies(xbmc):
 
 def xbmc_movies_with_sets(xbmc, movies):
     sort = xbmc_sort('movies')
+    version = xbmc.Application.GetProperties(properties=['version'])['version']['major']
     sets = xbmc.VideoLibrary.GetMovieSets(sort=sort, properties=['thumbnail', 'playcount'])['sets']
 
     #Find movies with sets and copy them into the set
-    for i in range(len(movies)):
-        if movies[i]['set']:
-            for set in sets:
-                if not 'movies' in set:
-                    set['movies'] = []
+    for set in sets:
+        if version == 11:
+            set['movies'] = [x for x in movies if set['label'] in x['set']]
 
-                #Eden
-                if isinstance(movies[i]['set'], list):
-                    if set['label'] in movies[i]['set']:
-                        set['movies'].append(movies[i])
+        #Frodo
+        else:
+            set['movies'] = [x for x in movies if set['label'] == x['set']]
 
-                #Frodo
-                if set['label'] == movies[i]['set']:
-                    set['movies'].append(movies[i])
+    #If set only has 1 movie, remove it from sets
+    single_set_movies = [s['movies'][0] for s in [x for x in sets if len(x['movies']) == 1]]
+    sets = [x for x in sets if len(x['movies']) > 1]
 
     #Add year and rating properties to set
     for set in sets:
@@ -562,16 +548,45 @@ def xbmc_movies_with_sets(xbmc, movies):
         set['movieset'] = True
 
     #Remove movies in sets from movies list
-    movies = [x for x in movies if not x['set']]
+    movies = [x for x in movies if not x['set'] or x in single_set_movies]
     #Add the movie sets to the movie list
     movies.extend(sets)
 
     #We need to re-sort the movies after adding sets
     if sort['method'] != 'random':
-        if sort['order'] == 'ascending':
-            movies = sorted(movies, key=lambda k: k[sort['method']])
+
+        if sort['method'] == 'label':
+            #Remove 'The ' from labels if thats what the user wants
+            if get_setting_value('xbmc_library_ignore_the') == '1':
+                the_movieids = {'movies': [], 'sets': []}
+                for movie in movies:
+                    if movie['label'].startswith('The '):
+                        movie['label'] = movie['label'][4:]
+                        if 'movieid' in movie:
+                            the_movieids['movies'].append(movie['movieid'])
+                        else:
+                            the_movieids['sets'].append(movie['setid'])
+
+            #Sort alphanumerically
+            natural_sort(movies, key=lambda k: k[sort['method']])
+
+            #Add 'The ' back in if it was removed
+            if get_setting_value('xbmc_library_ignore_the') == '1':
+                for movie in movies:
+                    if 'movieid' in movie:
+                        if movie['movieid'] in the_movieids['movies']:
+                            movie['label'] = 'The ' + movie['label']
+                    else:
+                        if movie['setid'] in the_movieids['sets']:
+                            movie['label'] = 'The %s' % movie['label']
+
         else:
-            movies = sorted(movies, key=lambda k: k[sort['method']], reverse=True)
+            movies = sorted(movies, key=lambda k: k[sort['method']])
+
+
+        if sort['order'] == 'descending':
+            movies.reverse()
+
     else:
         movies = random.shuffle(movies)
 
@@ -719,7 +734,6 @@ def xbmc_get_songs(xbmc, artistid, albumid):
     version = xbmc.Application.GetProperties(properties=['version'])['version']['major']
     params = {}
 
-    params['sort'] = xbmc_sort('songs')
     params['properties'] = ['album', 'track', 'playcount', 'year', 'albumid']
 
     if version == 11: #Eden
@@ -745,26 +759,28 @@ def xbmc_get_details(xbmc, media_type, mediaid):
 
     if media_type == 'movie':
         properties = ['title', 'rating', 'year', 'genre', 'plot', 'director', 'thumbnail', 'trailer', 'playcount', 'resume']
-        return xbmc.VideoLibrary.GetMovieDetails(movieid=mediaid, properties=properties)['moviedetails']
+        details = xbmc.VideoLibrary.GetMovieDetails(movieid=mediaid, properties=properties)['moviedetails']
 
     elif media_type == 'tvshow':
         properties = ['title', 'rating', 'year', 'genre', 'plot', 'premiered', 'thumbnail', 'playcount', 'studio']
-        return xbmc.VideoLibrary.GetTVShowDetails(tvshowid=mediaid, properties=properties)['tvshowdetails']
+        details = xbmc.VideoLibrary.GetTVShowDetails(tvshowid=mediaid, properties=properties)['tvshowdetails']
 
     elif media_type == 'episode':
         properties = ['season', 'tvshowid', 'title', 'rating', 'plot', 'thumbnail', 'playcount', 'firstaired', 'resume']
-        return xbmc.VideoLibrary.GetEpisodeDetails(episodeid=mediaid, properties=properties)['episodedetails']
+        details = xbmc.VideoLibrary.GetEpisodeDetails(episodeid=mediaid, properties=properties)['episodedetails']
 
     elif media_type == 'artist':
         properties = ['description', 'thumbnail', 'genre']
-        return xbmc.AudioLibrary.GetArtistDetails(artistid=mediaid, properties=properties)['artistdetails']
+        details = xbmc.AudioLibrary.GetArtistDetails(artistid=mediaid, properties=properties)['artistdetails']
 
     elif media_type == 'album':
         properties = ['title', 'artist', 'year', 'genre', 'description', 'albumlabel', 'rating', 'thumbnail']
-        return xbmc.AudioLibrary.GetAlbumDetails(albumid=mediaid, properties=properties)['albumdetails']
+        details = xbmc.AudioLibrary.GetAlbumDetails(albumid=mediaid, properties=properties)['albumdetails']
 
-
-
+    for k in details:
+        if isinstance(details[k], list):
+            details[k] = " / ".join(details[k])
+    return details
 
 
 def render_xbmc_library(template='xbmc_library.html',
@@ -780,7 +796,6 @@ def render_xbmc_library(template='xbmc_library.html',
     if media:
         settings = get_xbmc_media_settings(media)
         view = get_setting_value('xbmc_%s_view' % media)
-
         if media in back_id:
             back_pos = back_id[media]
 
@@ -800,5 +815,8 @@ def render_xbmc_library(template='xbmc_library.html',
         path=path,
         back_path=back_path,
         back_pos=back_pos,
-        show_info=get_setting_value('xbmc_library_show_info') == '1'
+        show_info=get_setting_value('xbmc_library_show_info') == '1',
+        show_music=get_setting_value('xbmc_library_show_music') == '1',
+        show_files=get_setting_value('xbmc_library_show_files') == '1',
+        show_power=get_setting_value('xbmc_library_show_power_buttons') == '1'
     )

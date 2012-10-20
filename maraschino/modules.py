@@ -706,6 +706,12 @@ AVAILABLE_MODULES = [
                 'description': 'Show files',
                 'type': 'bool',
             },
+            {
+                'key': 'xbmc_library_show_power_buttons',
+                'value': '1',
+                'description': 'Show power buttons',
+                'type': 'bool',
+            },
         ]
     },
 ]
