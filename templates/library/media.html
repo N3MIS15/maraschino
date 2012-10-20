@@ -1,14 +1,14 @@
-{% extends "xbmc_library/base.html" %}
+{% extends "library/base.html" %}
 {% block xbmc_library_title %}{{ title }}{% endblock %}
 {% block xbmc_library_content %}
 
   <div class="get back" data-url="{{ back_path }}">&laquo;</div>
 
   <div id="content" data-media="{{ media }}" data-url="{{ path }}">
-    {% include "xbmc_library/"+view+"_view.html" %}
+    {% include "library/"+view+"_view.html" %}
   </div>
 
-  {% include "xbmc_library/settings.html" %}
+  {% include "library/settings.html" %}
 
   <div id="filter_holder">
     <div id="filter">
@@ -26,7 +26,7 @@
   </div>
 
   {% if back_pos %}
-    <script>$('#xbmc_library #content #{{ back_pos }}').ScrollTo({duration: 0});</script>
+    <script>$('#library #content #{{ back_pos }}').ScrollTo({duration: 0});</script>
   {% endif %}
 
 {% endblock %}

@@ -66,7 +66,6 @@ def import_modules():
     import modules.updater
     import modules.utorrent
     import modules.weather
-    import modules.xbmc_library
     import modules.xbmc_notify
     import mobile
 

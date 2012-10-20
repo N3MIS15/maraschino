@@ -1,6 +1,6 @@
 <ul class="list_view">
   {% for item in library %}
-    <li {% include "xbmc_library/item_properties.html" %}>
+    <li {% include "library/item_properties.html" %}>
       <div
         {% if media == 'seasons' %}
           id="{{ item.season }}"

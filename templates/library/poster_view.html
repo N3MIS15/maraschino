@@ -1,7 +1,7 @@
 <div class="poster_view">
   <div class="inner">
     {% for item in library %}
-      <div {% include "xbmc_library/item_properties.html" %}>
+      <div {% include "library/item_properties.html" %}>
         <div
           {% if media == 'seasons' %}
             id="{{ item.season }}"

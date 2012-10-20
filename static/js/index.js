@@ -411,40 +411,10 @@ $(document).ready(function() {
     });
   });
 
-  // click show name to view in media library module
+  // invoke XBMC library
 
-  $(document).on('click', '#currently_playing .item_info_show .show', function() {
-    invoke_library(WEBROOT + '/xhr/library/shows/' + $(this).data('show'));
-  });
-
-  // click show season to view in media library module
-
-  $(document).on('click', '#currently_playing .item_info_show .season', function() {
-    invoke_library(WEBROOT + '/xhr/library/shows/' + $(this).parent().find('.show').data('show') + '/' + $(this).data('season'));
-  });
-
-  // click episode to view in media library module
-
-  $(document).on('click', '#currently_playing .item_info_show .episode', function() {
-    invoke_library(WEBROOT + '/xhr/library/episode/info/' + $(this).data('episode'));
-  });
-
-  // click movie to view in media library module
-
-  $(document).on('click', '#currently_playing .item_info_movie .movie', function() {
-    invoke_library(WEBROOT + '/xhr/library/movie/info/' + $(this).data('movie'));
-  });
-
-  // click artist name to view in media library module
-
-  $(document).on('click', '#currently_playing .item_info_artist .artist', function() {
-    invoke_library(WEBROOT + '/xhr/library/artists/' + $(this).data('artist'));
-  });
-
-  // click show album to view in media library module
-
-  $(document).on('click', '#currently_playing .item_info_artist .album', function() {
-    invoke_library(WEBROOT + '/xhr/library/artists/' + $(this).parent().find('.artist').data('artist') + '/' + $(this).data('album'));
+  $(document).on('click', '.invoke_library', function() {
+    invoke_library(WEBROOT + '/xhr/library' + $(this).data('path'));
   });
 
   function invoke_library(url) {
@@ -478,17 +448,16 @@ $(document).ready(function() {
   });
 
   // Filter function
-
   $(document).on('change keydown keyup search', '#library .filter', function(e){
     var filter = $(this).val().toLowerCase();
-    $('#library ul li').filter(function(index) {
-      return $(this).text().toLowerCase().indexOf(filter) < 0;
+    $('#library .media').filter(function(index) {
+      return $(this).attr('filter').toLowerCase().indexOf(filter) < 0;
     }).css('display', 'none');
-    $('#library ul li').filter(function(index) {
-      return $(this).text().toLowerCase().indexOf(filter) >= 0;
+    $('#library .media').filter(function(index) {
+      return $(this).attr('filter').toLowerCase().indexOf(filter) >= 0;
     }).css('display', '');
     if(e.which == 13){
-      $('#library ul li:visible:first').click();
+      $('#library .media:visible:first').click();
     }
   });
 
@@ -501,49 +470,41 @@ $(document).ready(function() {
 
 
   // update video library control
-
   $(document).on('click', '#library #video-update', function() {
     $.get(WEBROOT + '/xhr/controls/update_video');
   });
 
   // clean video library control
-
   $(document).on('click', '#library #video-clean', function() {
     $.get(WEBROOT + '/xhr/controls/clean_video');
   });
 
   // update music library control
-
   $(document).on('click', '#library #audio-update', function() {
     $.get(WEBROOT + '/xhr/controls/update_audio');
   });
 
   // clean music library control
-
   $(document).on('click', '#library #audio-clean', function() {
     $.get(WEBROOT + '/xhr/controls/clean_audio');
   });
 
   // xbmc poweron
-
   $(document).on('click', '#library #poweron', function() {
     $.get(WEBROOT + '/xhr/controls/poweron');
   });
 
   // xbmc poweroff
-
   $(document).on('click', '#library #poweroff', function() {
     $.get(WEBROOT + '/xhr/controls/poweroff');
   });
 
   // xbmc reboot
-
   $(document).on('click', '#library #reboot', function() {
     $.get(WEBROOT + '/xhr/controls/reboot');
   });
 
   // xbmc suspend
-
   $(document).on('click', '#library #suspend', function() {
     $.get(WEBROOT + '/xhr/controls/suspend');
   });
@@ -696,27 +657,38 @@ $(document).ready(function() {
     invoke_library(WEBROOT + '/xhr/library/album/info/' + $(this).data('albumid'));
   });
 
+
+  // show xhrloading
+  function show_library_loading() {
+    $('#library .back').hide();
+    $('#library .xhrloading').show();
+  }
+
+  // hide xhrloading
+  function hide_library_loading() {
+    $('#library .xhrloading').hide();
+    $('#library .back').show();
+  }
+
+  /*** XBMC LIBRARY ***/
+
   // browse library
+  $(document).on('click', '#library .get', function() {
+    var url = $(this).data('url');
+    url = WEBROOT + '/xhr/library' + url;
 
-  $(document).on('click', '#library li.get', function() {
-    var url = WEBROOT + '/xhr/library';
-    var commands = $(this).data('command').split('/');
-
-    for (var i=0; i < commands.length; i++) {
-      url += '/' + commands[i];
-    }
-
-    add_loading_gif(this);
+    show_library_loading();
 
     $.get(url, function(data) {
       $('#library').replaceWith(data);
     });
   });
 
-  $(document).on('click', '#library #play', function() {
+  // play button
+  $(document).on('click', '#library .play', function() {
     var li;
-    if ($(this).hasClass('li_buttons')) {
-      li = $(this).parent().parent();
+    if ($(this).hasClass('button')) {
+      li = $(this).closest('.media');
     }
     else {
       li = this;
@@ -725,17 +697,38 @@ $(document).ready(function() {
     var file_type = $(li).attr('file-type');
     var media_type = $(li).attr('media-type');
     var id = $(li).data('id');
-    add_loading_gif(li);
+    show_library_loading();
 
     $.get(WEBROOT + '/xhr/play/' + file_type + '/' + media_type + '/' + id, function() {
-      remove_loading_gif(li);
+      hide_library_loading();
     });
   });
 
-  $(document).on('click', '#library #queue', function() {
+  // play file button
+  $(document).on('click', '#library .play_file', function() {
+    var file = $(this).data('path');
+
+    show_library_loading();
+    $.post(WEBROOT + '/xhr/play_file/' + $(this).attr('file-type') + '/',{file: encodeURI(file)}, function(data){
+      hide_library_loading();
+    });
+  });
+
+  // queue file button
+  $(document).on('click', '#library .queue_file', function() {
+    var file = $(this).data('path');
+
+    show_library_loading();
+    $.post(WEBROOT + '/xhr/enqueue_file/' + $(this).attr('file-type') + '/',{file: encodeURI(file)}, function(data){
+      hide_library_loading();
+    });
+  });
+
+  // queue button
+  $(document).on('click', '#library .queue', function() {
     var li;
-    if ($(this).hasClass('li_buttons')) {
-      li = $(this).parent().parent();
+    if ($(this).hasClass('button')) {
+      li = $(this).closest('.media');
     }
     else {
       li = this;
@@ -744,35 +737,18 @@ $(document).ready(function() {
     var file_type = $(li).attr('file-type');
     var media_type = $(li).attr('media-type');
     var id = $(li).data('id');
-    add_loading_gif(li);
+    show_library_loading();
 
     $.get(WEBROOT + '/xhr/enqueue/' + file_type + '/' + media_type + '/' + id, function() {
-      remove_loading_gif(li);
+      hide_library_loading();
     });
   });
 
-  $(document).on('click', '#library #info', function() {
+  //Check for resume position when clicking video
+  $(document).on('click', '#library .resume_check', function() {
     var li;
-    if ($(this).hasClass('li_buttons')) {
-      li = $(this).parent().parent();
-    }
-    else {
-      li = this;
-    }
-
-    var id = $(li).data('id');
-    var media_type = $(li).attr('media-type');
-    add_loading_gif(li);
-
-    $.get(WEBROOT + '/xhr/library/' + media_type + '/info/' + id, function(data) {
-      $('#library').replaceWith(data);
-    });
-  });
-
-  $(document).on('click', '#library #resume_check', function() {
-    var li;
-    if ($(this).hasClass('li_buttons')) {
-      li = $(this).parent().parent();
+    if ($(this).hasClass('button')) {
+      li = $(this).closest('.media');
     }
     else {
       li = this;
@@ -781,10 +757,10 @@ $(document).ready(function() {
     var file_type = $(li).attr('file-type');
     var media_type = $(li).attr('media-type');
     var id = $(li).data('id');
-    add_loading_gif(li);
+    show_library_loading();
 
     $.get(WEBROOT + '/xhr/library/' + media_type + '/resume_check/' + id, function(data) {
-      remove_loading_gif(li);
+      hide_library_loading();
       if (data.resume) {
         var popup = $(data.template);
         $('body').append(popup);
@@ -824,84 +800,48 @@ $(document).ready(function() {
     });
   });
 
-  $(document).on('click', '#library li.dir', function() {
-    var path = $(this).data('path');
 
-    add_loading_gif(this);
-    $.post(WEBROOT + '/xhr/library/files/' + $(this).data('file_type') + '/dir/',{path: encodeURI(path)}, function(data){
-      $('#library').replaceWith(data);
-    });
-  });
-
-  $(document).on('click', '#library li.play_file', function() {
-    var li = this;
-    var file = $(this).data('path');
-
-    add_loading_gif(li);
-    $.post(WEBROOT + '/xhr/play_file/' + $(this).data('file_type') + '/',{file: encodeURI(file)}, function(data){
-      remove_loading_gif(li);
-    });
-  });
-
-  $(document).on('click', '#library #queue_file', function() {
-    var li = this;
-    var file = $(this).data('path');
-
-    add_loading_gif(li);
-    $.post(WEBROOT + '/xhr/enqueue_file/' + $(this).data('file_type') + '/',{file: encodeURI(file)}, function(data){
-      remove_loading_gif(li);
-    });
-  });
-
-  $(document).on('click', '#library .li_buttons', function(e) {
+  // list view buttons
+  $(document).on('click', '#library .list_buttons .button', function(e) {
     e.stopPropagation();
   });
 
-  $(document).on('mouseenter', '#library li', function() {
+  $(document).on('mouseenter', '#library ul.compact li', function() {
     $('.watched', this).hide();
-    $('.li_buttons', this).show();
+    $('.list_buttons .button', this).show();
   });
 
-  $(document).on('mouseleave', '#library li', function() {
-    $('.li_buttons', this).hide();
+  $(document).on('mouseleave', '#library ul.compact li', function() {
+    $('.list_buttons .button', this).hide();
     $('.watched', this).show();
   });
 
-  $(document).on('click', '#library #back', function() {
-    var url = WEBROOT + '/xhr/library';
-    var command = $('#library li:first-child').eq(0).data('command');
+  // Save media settings
+  $(document).on('click', '#library #settings .choices .save', function() {
+    var settings = $('#library #settings').find('form').serializeArray();
+    var media = $('#library #content').data('media');
+    var url = $('#library #content').data('url');
+    url = WEBROOT + '/xhr/library' + url;
+    button = $(this);
 
-    if (command) {
-      var commands = command.split('/');
-      commands.pop();
-      commands.pop();
+    show_library_loading();
 
-      for (var i=0; i < commands.length; i++) {
-        url += '/' + commands[i];
+    $.post(
+      WEBROOT + '/xhr/library/save/'+media+'/',
+      {settings: JSON.stringify(settings)},
+      function(data) {
+        if (data.success) {
+          $.get(url, function(data) {
+            $('#library').replaceWith(data);
+            toggle_settings_mode();
+          });
+        }
+        else {
+          popup_message('Failed to save '+media+' settings');
+          hide_library_loading();
+        }
       }
-    }
-
-    $(this).addClass('xhrloading');
-
-    $.get(url, function(data) {
-      $('#library').replaceWith(data);
-    });
-  });
-
-  $(document).on('click', '#library #back_dir', function() {
-    var path = $(this).data('back');
-
-    $(this).addClass('xhrloading');
-    $.post(WEBROOT + '/xhr/library/files/' + $(this).data('file_type') + '/dir/',{path: encodeURI(path)}, function(data){
-    $('#library').replaceWith(data);
-    });
-  });
-
-  $(document).on('click', '#library #back_sources', function() {
-    $(this).addClass('xhrloading');
-    $.get(WEBROOT + '/xhr/library/files/' + $(this).data('file_type'), function(data) {
-    $('#library').replaceWith(data);
-    });
+    );
   });
 
 
@@ -3037,217 +2977,4 @@ $(document).ready(function() {
     }
   }
 
-    //////////////////
-   // XBMC LIBRARY //
-  //////////////////
-
-  // show xhrloading
-  function show_library_loading() {
-    $('#xbmc_library .back').hide();
-    $('#xbmc_library .xhrloading').show();
-  }
-
-  // hide xhrloading
-  function hide_library_loading() {
-    $('#xbmc_library .xhrloading').hide();
-    $('#xbmc_library .back').show();
-  }
-
-  // browse XBMC library
-  $(document).on('click', '#xbmc_library .get', function() {
-    var url = $(this).data('url');
-    url = WEBROOT + '/xhr/xbmc_library' + url;
-
-    show_library_loading();
-
-    $.get(url, function(data) {
-      $('#xbmc_library').replaceWith(data);
-    });
-  });
-
-  // Save media settings
-  $(document).on('click', '#xbmc_library #settings .choices .save', function() {
-    var settings = $('#xbmc_library #settings').find('form').serializeArray();
-    var media = $('#xbmc_library #content').data('media');
-    var url = $('#xbmc_library #content').data('url');
-    url = WEBROOT + '/xhr/xbmc_library' + url;
-    button = $(this);
-
-    show_library_loading();
-
-    $.post(
-      WEBROOT + '/xhr/xbmc_library/save/'+media+'/',
-      {settings: JSON.stringify(settings)},
-      function(data) {
-        if (data.success) {
-          $.get(url, function(data) {
-            $('#xbmc_library').replaceWith(data);
-            toggle_settings_mode();
-          });
-        }
-        else {
-          popup_message('Failed to save '+media+' settings');
-          hide_library_loading();
-        }
-      }
-    );
-  });
-
-  //Check for resume position when clicking video
-  $(document).on('click', '#xbmc_library .resume_check', function() {
-    var li;
-    if ($(this).hasClass('button')) {
-      li = $(this).closest('.media');
-    }
-    else {
-      li = this;
-    }
-
-    var file_type = $(li).attr('file-type');
-    var media_type = $(li).attr('media-type');
-    var id = $(li).data('id');
-    show_library_loading();
-
-    $.get(WEBROOT + '/xhr/library/' + media_type + '/resume_check/' + id, function(data) {
-      hide_library_loading();
-      if (data.resume) {
-        var popup = $(data.template);
-        $('body').append(popup);
-        popup.showPopup({ dispose: true });
-      }
-      else {
-        $.get(WEBROOT + '/xhr/play/' + file_type + '/' + media_type + '/' + id);
-      }
-    });
-  });
-
-  // play button
-  $(document).on('click', '#xbmc_library .play', function() {
-    var li;
-    if ($(this).hasClass('button')) {
-      li = $(this).closest('.media');
-    }
-    else {
-      li = this;
-    }
-
-    var file_type = $(li).attr('file-type');
-    var media_type = $(li).attr('media-type');
-    var id = $(li).data('id');
-    show_library_loading();
-
-    $.get(WEBROOT + '/xhr/play/' + file_type + '/' + media_type + '/' + id, function() {
-      hide_library_loading();
-    });
-  });
-
-  // play file button
-  $(document).on('click', '#xbmc_library .play_file', function() {
-    var file = $(this).data('path');
-
-    show_library_loading();
-    $.post(WEBROOT + '/xhr/play_file/' + $(this).attr('file-type') + '/',{file: encodeURI(file)}, function(data){
-      hide_library_loading();
-    });
-  });
-
-  // queue file button
-  $(document).on('click', '#xbmc_library .queue_file', function() {
-    var file = $(this).data('path');
-
-    show_library_loading();
-    $.post(WEBROOT + '/xhr/enqueue_file/' + $(this).attr('file-type') + '/',{file: encodeURI(file)}, function(data){
-      hide_library_loading();
-    });
-  });
-
-  // queue button
-  $(document).on('click', '#xbmc_library .queue', function() {
-    var li;
-    if ($(this).hasClass('button')) {
-      li = $(this).closest('.media');
-    }
-    else {
-      li = this;
-    }
-
-    var file_type = $(li).attr('file-type');
-    var media_type = $(li).attr('media-type');
-    var id = $(li).data('id');
-    show_library_loading();
-
-    $.get(WEBROOT + '/xhr/enqueue/' + file_type + '/' + media_type + '/' + id, function() {
-      hide_library_loading();
-    });
-  });
-
-  // list view buttons
-  $(document).on('click', '#xbmc_library .list_buttons .button', function(e) {
-    e.stopPropagation();
-  });
-
-  $(document).on('mouseenter', '#xbmc_library li', function() {
-    $('.watched', this).hide();
-    $('.list_buttons .button', this).show();
-  });
-
-  $(document).on('mouseleave', '#xbmc_library li', function() {
-    $('.list_buttons .button', this).hide();
-    $('.watched', this).show();
-  });
-
-  // Filter function
-
-  $(document).on('change keydown keyup search', '#xbmc_library .filter', function(e){
-    var filter = $(this).val().toLowerCase();
-    $('#xbmc_library .media').filter(function(index) {
-      return $(this).attr('filter').toLowerCase().indexOf(filter) < 0;
-    }).css('display', 'none');
-    $('#xbmc_library .media').filter(function(index) {
-      return $(this).attr('filter').toLowerCase().indexOf(filter) >= 0;
-    }).css('display', '');
-    if(e.which == 13){
-      $('#xbmc_library .media:visible:first').click();
-    }
-  });
-
-  // update video library control
-  $(document).on('click', '#xbmc_library #video-update', function() {
-    $.get(WEBROOT + '/xhr/controls/update_video');
-  });
-
-  // clean video library control
-  $(document).on('click', '#xbmc_library #video-clean', function() {
-    $.get(WEBROOT + '/xhr/controls/clean_video');
-  });
-
-  // update music library control
-  $(document).on('click', '#xbmc_library #audio-update', function() {
-    $.get(WEBROOT + '/xhr/controls/update_audio');
-  });
-
-  // clean music library control
-  $(document).on('click', '#xbmc_library #audio-clean', function() {
-    $.get(WEBROOT + '/xhr/controls/clean_audio');
-  });
-
-  // xbmc poweron
-  $(document).on('click', '#xbmc_library #poweron', function() {
-    $.get(WEBROOT + '/xhr/controls/poweron');
-  });
-
-  // xbmc poweroff
-  $(document).on('click', '#xbmc_library #poweroff', function() {
-    $.get(WEBROOT + '/xhr/controls/poweroff');
-  });
-
-  // xbmc reboot
-  $(document).on('click', '#xbmc_library #reboot', function() {
-    $.get(WEBROOT + '/xhr/controls/reboot');
-  });
-
-  // xbmc suspend
-  $(document).on('click', '#xbmc_library #suspend', function() {
-    $.get(WEBROOT + '/xhr/controls/suspend');
-  });
 });

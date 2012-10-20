@@ -1,6 +1,6 @@
 <ul class="banner_view">
   {% for item in library %}
-    <li {% include "xbmc_library/item_properties.html" %}>
+    <li {% include "library/item_properties.html" %}>
       <div id="{{ item[media[:-1]+'id'] }}">
 
         {% if 'art' in item %} <!-- FRODO ONLY -->
