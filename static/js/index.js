@@ -3141,6 +3141,26 @@ $(document).ready(function() {
     });
   });
 
+  // play file button
+  $(document).on('click', '#xbmc_library .play_file', function() {
+    var file = $(this).data('path');
+
+    show_library_loading();
+    $.post(WEBROOT + '/xhr/play_file/' + $(this).attr('file-type') + '/',{file: encodeURI(file)}, function(data){
+      hide_library_loading();
+    });
+  });
+
+  // queue file button
+  $(document).on('click', '#xbmc_library .queue_file', function() {
+    var file = $(this).data('path');
+
+    show_library_loading();
+    $.post(WEBROOT + '/xhr/enqueue_file/' + $(this).attr('file-type') + '/',{file: encodeURI(file)}, function(data){
+      hide_library_loading();
+    });
+  });
+
   // queue button
   $(document).on('click', '#xbmc_library .queue', function() {
     var li;
@@ -3191,4 +3211,43 @@ $(document).ready(function() {
     }
   });
 
+  // update video library control
+  $(document).on('click', '#xbmc_library #video-update', function() {
+    $.get(WEBROOT + '/xhr/controls/update_video');
+  });
+
+  // clean video library control
+  $(document).on('click', '#xbmc_library #video-clean', function() {
+    $.get(WEBROOT + '/xhr/controls/clean_video');
+  });
+
+  // update music library control
+  $(document).on('click', '#xbmc_library #audio-update', function() {
+    $.get(WEBROOT + '/xhr/controls/update_audio');
+  });
+
+  // clean music library control
+  $(document).on('click', '#xbmc_library #audio-clean', function() {
+    $.get(WEBROOT + '/xhr/controls/clean_audio');
+  });
+
+  // xbmc poweron
+  $(document).on('click', '#xbmc_library #poweron', function() {
+    $.get(WEBROOT + '/xhr/controls/poweron');
+  });
+
+  // xbmc poweroff
+  $(document).on('click', '#xbmc_library #poweroff', function() {
+    $.get(WEBROOT + '/xhr/controls/poweroff');
+  });
+
+  // xbmc reboot
+  $(document).on('click', '#xbmc_library #reboot', function() {
+    $.get(WEBROOT + '/xhr/controls/reboot');
+  });
+
+  // xbmc suspend
+  $(document).on('click', '#xbmc_library #suspend', function() {
+    $.get(WEBROOT + '/xhr/controls/suspend');
+  });
 });

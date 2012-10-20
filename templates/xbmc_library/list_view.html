@@ -16,7 +16,7 @@
 
         {{ item.label }}
 
-        {% if not 'movieset' in item %}
+        {% if not 'movieset' in item and not media == 'files' %}
           <span class="list_buttons">
             {% if show_info %}
               <a class="button play">Play</a>
@@ -29,6 +29,11 @@
               {% endif %}
             {% endif %}
             <a class="button queue">Queue</a>
+          </span>
+
+        {% elif media == 'files' and item.filetype == 'file' %}
+          <span class="list_buttons">
+            <a class="button queue_file" file-type="{{ file }}" data-path="{{ item.file }}">Queue</a>
           </span>
         {% endif %}
 

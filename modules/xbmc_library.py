@@ -4,10 +4,10 @@ from maraschino.models import Setting
 from maraschino.database import db_session
 from maraschino.tools import requires_auth, get_setting, get_setting_value, natural_sort
 from maraschino import app, logger
-import jsonrpclib, random
+import jsonrpclib, random, os
 
 back_id = {}
-
+file_sources = {}
 library_settings = {
     'movies': [
         {
@@ -272,6 +272,27 @@ library_settings = {
             ]
         },
     ],
+    'files': [
+        {
+            'key': 'xbmc_files_sort_order',
+            'value': 'ascending',
+            'description': 'Sort direction',
+            'type': 'select',
+            'options': [
+                {'value': 'ascending', 'label': 'Ascending'},
+                {'value': 'descending', 'label': 'Descending'},
+            ]
+        },
+        {
+            'key': 'xbmc_files_view',
+            'value': 'list',
+            'description': 'Files view',
+            'type': 'select',
+            'options': [
+                {'value': 'list', 'label': 'List'},
+            ]
+        },
+    ],
 }
 
 def init_xbmc_media_settings():
@@ -412,6 +433,7 @@ def xhr_xbmc_library_media(media_type=None):
             path = '/seasons?tvshowid=%s' % tvshowid
             back_path = '/tvshows'
 
+
         elif media_type == 'episodes':
             file_type = 'video'
             tvshowid = request.args['tvshowid']
@@ -483,6 +505,40 @@ def xhr_xbmc_library_media(media_type=None):
             path = '/songs?artistid=%s&albumid=%s' % (artistid, albumid)
             back_path = '/albums?artistid=%s' % artistid
 
+
+        #FILES
+        elif media_type == 'files':
+            global file_sources
+
+            if 'files' in request.args:
+                file_type = request.args['files']
+
+                if 'path' in request.args: #Path
+                    title = request.args['path']
+                    if title in file_sources[file_type]:
+                        back_path = '/files?files=%s' % file_type
+                    else:
+                        back_path = '/files?files=%s&path=%s' % (file_type, os.path.dirname(title))
+                        if back_path.endswith('/') or back_path.endswith('\\'):
+                            back_path = back_path[:-1]
+
+                    library = xbmc_get_file_path(xbmc, file_type, title)
+
+                else: #Sources
+                    file_sources = {}
+                    library = xbmc_get_sources(xbmc, file_type)
+                    title = '%s Sources' % file_type.title()
+                    path = '/files?files=%s' % file_type
+                    back_path = '/files'
+
+            else: #Files home
+                file_type = None
+                title = 'Files'
+                path = '/files'
+                library = [
+                    {'label': 'Video', 'file_type': 'video'},
+                    {'label': 'Music', 'file_type': 'music'}
+                ]
 
     except Exception as e:
         logger.log('LIBRARY :: Problem fetching %s' % media_type, 'ERROR')
@@ -754,6 +810,34 @@ def xbmc_get_songs(xbmc, artistid, albumid):
     return songs
 
 
+def xbmc_get_sources(xbmc, file_type):
+    logger.log('LIBRARY :: Retrieving %s sources' % file_type, 'INFO')
+    global file_sources
+
+    sources = xbmc.Files.GetSources(media=file_type)['sources']
+
+    for s in sources:
+        if s['file'].endswith('/') or s['file'].endswith('\\'):
+            s['file'] = s['file'][:-1]
+
+    file_sources[file_type] = [x['file'] for x in sources]
+
+    return sources
+
+
+def xbmc_get_file_path(xbmc, file_type, path):
+    logger.log('LIBRARY :: Retrieving %s path: %s' % (file_type, path), 'INFO')
+    files = xbmc.Files.GetDirectory(media=file_type, directory=path)['files']
+
+    if not files:
+        files = [{'label': 'Directory is empty', 'file': path}]
+    for f in files:
+        if f['file'].endswith('/') or f['file'].endswith('\\'):
+            f['file'] = f['file'][:-1]
+
+    return files
+
+
 def xbmc_get_details(xbmc, media_type, mediaid):
     logger.log('LIBRARY :: Retrieving %s details for %sid: %s' % (media_type, media_type, mediaid), 'INFO')
 
@@ -796,6 +880,7 @@ def render_xbmc_library(template='xbmc_library.html',
     if media:
         settings = get_xbmc_media_settings(media)
         view = get_setting_value('xbmc_%s_view' % media)
+
         if media in back_id:
             back_pos = back_id[media]
 

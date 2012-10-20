@@ -52,7 +52,7 @@
     overflow: auto;
   }
 
-  .list_view li, div.poster, .back, .banner_view li {
+  .list_view li, div.poster, .back, {
     background: url('/@{webroot}/images/alpha/fff_10.png');
     border: 1px solid #222;
     cursor: pointer;
@@ -186,15 +186,14 @@
 
   .banner_view li {
     position: relative;
-    height: 90px;
-    overflow: hidden;
+    cursor: pointer;
 
     img.banner {
       width: 100%;
       height: auto;
     }
 
-    .watched {
+    .seen {
       position: absolute;
       right: 5px;
       bottom: 5px;

@@ -14,11 +14,6 @@
           {% endif %}
         {% endif %}
 
-        {{ item.label }}
-
-        {% if item.playcount %}
-          <img class="watched" src="{{ url_for('static', filename='images/tick.png') }}">
-        {% endif %}
       </div>
     </li>
   {% endfor %}

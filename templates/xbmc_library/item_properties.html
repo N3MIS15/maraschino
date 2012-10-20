@@ -11,6 +11,10 @@
 {% elif media == 'songs' %}
   {% set action = 'play' %}
 
+{% elif media == 'files' and item.filetype == 'file' %}
+  {% set action = 'play_file' %}
+  data-path="{{ item.file }}"
+
 {% else %}
   {% set action = 'get' %}
 {% endif %}
@@ -39,4 +43,8 @@ filter="{{ item.label }}"
   data-url="/albums?artistid={{ item.artistid }}"
 {% elif media == 'albums' %}
   data-url="/songs?artistid={{ item.artistid }}&albumid={{ item.albumid }}"
+{% elif media == 'files' and not file %}
+  data-url="/files?files={{ item.file_type }}"
+{% elif media == 'files' and item.file %}
+  data-url="/files?files={{ file }}&path={{ item.file }}"
 {% endif %}

@@ -32,19 +32,11 @@
 {% endblock %}
 
 {% block power_holder %}
-  {% if file == 'video' %}
-    <div class="power" title="Update Video Library" id="video-update">
+  {% if path != '/files' %}
+    <div class="power" title="Update {{ file|title }} Library" id="{{ file }}-update">
       <img src="{{ url_for('static', filename='images/refresh.png') }}"/>
     </div>
-    <div class="power" title="Clean Video Library" id="video-clean">
-      <img src="{{ url_for('static', filename='images/clean.png') }}"/>
-    </div>
-
-  {% elif file == 'audio' %}
-    <div class="power" title="Update Music Library" id="audio-update">
-      <img src="{{ url_for('static', filename='images/refresh.png') }}"/>
-    </div>
-    <div class="power" title="Clean Music Library" id="audio-clean">
+    <div class="power" title="Clean {{ file|title }} Library" id="{{ file }}-clean">
       <img src="{{ url_for('static', filename='images/clean.png') }}"/>
     </div>
   {% endif %}
