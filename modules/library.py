@@ -576,6 +576,7 @@ def xhr_xbmc_library_media(media_type=None):
             path = '/channels?type=%s&channelgroupid=%s' % (channeltype, channelgroupid)
             back_path = '/channelgroups?type=%s' % channeltype
             title = library[0]['grouplabel']
+            back_id['channelgroups'] = channelgroupid
 
 
         #FILES
@@ -608,8 +609,8 @@ def xhr_xbmc_library_media(media_type=None):
                 title = 'Files'
                 path = '/files'
                 library = [
-                    {'label': 'Video', 'file_type': 'video'},
-                    {'label': 'Music', 'file_type': 'music'}
+                    {'label': 'Video', 'filetype': 'video'},
+                    {'label': 'Music', 'filetype': 'music'}
                 ]
 
     except Exception as e:

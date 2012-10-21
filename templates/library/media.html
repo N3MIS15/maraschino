@@ -2,6 +2,33 @@
 {% block xbmc_library_title %}{{ title }}{% endblock %}
 {% block xbmc_library_content %}
 
+  <!-- SET UP BUTTONS -->
+  {% if media == 'movies' or media == 'episodes' %}
+    {% if show_info %}
+      {% set buttons = ['play', 'queue'] %}
+    {% else %}
+      {% set buttons = ['info', 'queue'] %}
+    {% endif %}
+
+  {% elif media == 'tvshows' or media == 'artists' or media == 'albums' %}
+      {% set buttons = ['info', 'play', 'queue'] %}
+
+  {% elif media == 'seasons' %}
+      {% set buttons = ['play', 'queue'] %}
+
+  {% elif media == 'songs' %}
+      {% set buttons = ['queue'] %}
+
+  {% elif media == 'files' %}
+    {% set buttons = ['queue'] %}
+
+  {% elif media == 'channels' %}
+    {% set buttons = ['record'] %}
+
+  {% else %}
+    {% set buttons = [] %}
+  {% endif %}
+
   <div class="get back" data-url="{{ back_path }}">&laquo;</div>
 
   <div id="content" data-media="{{ media }}" data-url="{{ path }}">

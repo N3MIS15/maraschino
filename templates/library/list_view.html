@@ -16,24 +16,32 @@
 
         {{ item.label }}
 
-        {% if not 'movieset' in item and not media == 'files' and not media == 'channels' and not media == 'channelgroups' %}
+        {% if buttons %}
           <span class="list_buttons">
-            {% if show_info %}
+            {% if 'play' in buttons %}
               <a class="button play">Play</a>
-            {% else %}
-              {% if not media == 'seasons' %}
-                <a
-                  class="button get"
-                  data-url="{{path}}{{'?' if not '?' in path else '&'}}{{media[:-1]}}id={{item[media[:-1]+'id']}}"
-                >Info</a>
+            {% endif %}
+
+            {% if 'info' in buttons %}
+              <a
+                class="button get"
+                data-url="{{path}}{{'?' if not '?' in path else '&'}}{{media[:-1]}}id={{item[media[:-1]+'id']}}"
+              >Info</a>
+            {% endif %}
+
+            {% if 'queue' in buttons %}
+              {% if media == 'files' %}
+                {% if item.filetype == 'file' %}
+                  <a class="button queue_file" data-path="{{ item.file }}" file-type="{{ file }}">Queue</a>
+                {% endif %}
+              {% else %}
+                <a class="button queue">Queue</a>
               {% endif %}
             {% endif %}
-            <a class="button queue">Queue</a>
-          </span>
 
-        {% elif media == 'files' and item.filetype == 'file' %}
-          <span class="list_buttons">
-            <a class="button queue_file" file-type="{{ file }}" data-path="{{ item.file }}">Queue</a>
+            {% if 'record' in buttons %}
+              <!--<a class="button toggle_record">Record</a>-->
+            {% endif %}
           </span>
         {% endif %}
 

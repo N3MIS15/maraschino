@@ -1,7 +1,7 @@
 <ul class="banner_view">
   {% for item in library %}
     <li {% include "library/item_properties.html" %}>
-      <div id="{{ item[media[:-1]+'id'] }}">
+      <div id="{{ item[media[:-1]+'id'] }}" title="{{ item.label }}">
 
         {% if 'art' in item %} <!-- FRODO ONLY -->
           {% if 'banner' in item.art %}
