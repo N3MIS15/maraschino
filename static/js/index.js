@@ -795,25 +795,21 @@ $(document).ready(function() {
     });
   });
 
-  $(document).on('click', '#library #trailer', function() {
-    $.get(WEBROOT + '/xhr/play/trailer/' + $(this).data('id'));
+  $(document).on('click', '#library .trailer', function() {
+    show_library_loading();
+    $.get(WEBROOT + '/xhr/play/trailer/' + $(this).data('id'), function() {
+      hide_library_loading();
+    });
   });
 
-  $(document).on('click', '#library #resume', function() {
-    var li;
-    if ($(this).hasClass('li_buttons')) {
-      li = $(this).parent().parent();
-    }
-    else {
-      li = this;
-    }
+  $(document).on('click', '#library .resume', function() {
+    var media = $(this).closest('.media');
+    var media_type = media.attr('media-type');
+    var id = media.data('id');
 
-    var media_type = $(li).attr('media-type');
-    var id = $(li).data('id');
-    add_loading_gif(li);
-
+    show_library_loading();
     $.get(WEBROOT + '/xhr/resume/video/' + media_type + '/' + id, function() {
-      remove_loading_gif(li);
+      hide_library_loading();
     });
   });
 

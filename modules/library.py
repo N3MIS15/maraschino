@@ -940,6 +940,7 @@ def xbmc_get_channels(xbmc, channeltype, channelgroupid):
 
     return channels
 
+
 def xbmc_get_details(xbmc, media_type, mediaid):
     logger.log('LIBRARY :: Retrieving %s details for %sid: %s' % (media_type, media_type, mediaid), 'INFO')
 
