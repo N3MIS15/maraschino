@@ -195,6 +195,18 @@ AVAILABLE_MODULES = [
                 'type': 'bool',
             },
             {
+                'key': 'library_show_livetv',
+                'value': '0',
+                'description': 'Show Live TV (XBMC 12+ only)',
+                'type': 'bool',
+            },
+            {
+                'key': 'library_show_liveradio',
+                'value': '0',
+                'description': 'Show Live Radio (XBMC 12+ only)',
+                'type': 'bool',
+            },
+            {
                 'key': 'library_show_files',
                 'value': '1',
                 'description': 'Show files',

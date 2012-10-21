@@ -16,7 +16,7 @@
 
         {{ item.label }}
 
-        {% if not 'movieset' in item and not media == 'files' %}
+        {% if not 'movieset' in item and not media == 'files' and not media == 'channels' and not media == 'channelgroups' %}
           <span class="list_buttons">
             {% if show_info %}
               <a class="button play">Play</a>

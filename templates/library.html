@@ -4,6 +4,12 @@
   <ul class="list_view">
     <li class="get" data-url="/movies">Movies</li>
     <li class="get" data-url="/tvshows">TV Shows</li>
+    {% if show_livetv %}
+      <li class="get" data-url="/channelgroups?type=tv">Live TV</li>
+    {% endif %}
+    {% if show_liveradio %}
+      <li class="get" data-url="/channelgroups?type=radio">Live Radio</li>
+    {% endif %}
     {% if show_music %}
       <li class="get" data-url="/artists">Music</li>
     {% endif %}

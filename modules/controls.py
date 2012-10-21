@@ -350,6 +350,20 @@ def xhr_remove_playlist_item(playlistid, position):
         logger.log('CONTROLS :: %s' % xbmc_error, 'ERROR')
         return jsonify({'failed': True})
 
+@app.route('/xhr/controls/change_channel/<int:channelid>')
+@requires_auth
+def xhr_change_channel(channelid):
+    logger.log('CONTROLS :: Changing channel %s' % channelid, 'INFO')
+    xbmc = jsonrpclib.Server(server_api_address())
+
+    try:
+        xbmc.Player.Open(item={'channelid': channelid})
+        return jsonify({'success': True})
+
+    except:
+        logger.log('CONTROLS :: %s' % xbmc_error, 'ERROR')
+        return jsonify({'failed': True})
+
 @app.route('/xhr/controls/<command>')
 @requires_auth
 def xhr_controls(command):

@@ -15,6 +15,9 @@
   {% set action = 'play_file' %}
   data-path="{{ item.file }}"
 
+{% elif media == 'channels' %}
+  {% set action = 'change_channel' %}
+
 {% else %}
   {% set action = 'get' %}
 {% endif %}
@@ -47,4 +50,6 @@ filter="{{ item.label }}"
   data-url="/files?files={{ item.file_type }}"
 {% elif media == 'files' and item.file %}
   data-url="/files?files={{ file }}&path={{ item.file }}"
+{% elif media == 'channelgroups' %}
+  data-url="/channels?type={{ item.channeltype }}&channelgroupid={{ item.channelgroupid }}"
 {% endif %}

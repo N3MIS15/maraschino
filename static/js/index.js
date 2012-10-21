@@ -714,6 +714,14 @@ $(document).ready(function() {
     });
   });
 
+  // change channel
+  $(document).on('click', '#library .change_channel', function() {
+    show_library_loading();
+    $.get(WEBROOT + '/xhr/controls/change_channel/' + $(this).data('id'), function(data){
+      hide_library_loading();
+    });
+  });
+
   // queue file button
   $(document).on('click', '#library .queue_file', function() {
     var file = $(this).data('path');

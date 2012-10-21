@@ -293,6 +293,48 @@ library_settings = {
             ]
         },
     ],
+    'channelgroups': [
+        {
+            'key': 'xbmc_channelgroups_sort_order',
+            'value': 'ascending',
+            'description': 'Sort direction',
+            'type': 'select',
+            'options': [
+                {'value': 'ascending', 'label': 'Ascending'},
+                {'value': 'descending', 'label': 'Descending'},
+            ]
+        },
+        {
+            'key': 'xbmc_channelgroups_view',
+            'value': 'list',
+            'description': 'Channel groups view',
+            'type': 'select',
+            'options': [
+                {'value': 'list', 'label': 'List'},
+            ]
+        },
+    ],
+    'channels': [
+        {
+            'key': 'xbmc_channels_sort_order',
+            'value': 'ascending',
+            'description': 'Sort direction',
+            'type': 'select',
+            'options': [
+                {'value': 'ascending', 'label': 'Ascending'},
+                {'value': 'descending', 'label': 'Descending'},
+            ]
+        },
+        {
+            'key': 'xbmc_channels_view',
+            'value': 'list',
+            'description': 'Channels view',
+            'type': 'select',
+            'options': [
+                {'value': 'list', 'label': 'List'},
+            ]
+        },
+    ],
 }
 
 def init_xbmc_media_settings():
@@ -505,6 +547,35 @@ def xhr_xbmc_library_media(media_type=None):
             title = '%s (%s)' % (library[0]['album'], library[0]['year'])
             path = '/songs?artistid=%s&albumid=%s' % (artistid, albumid)
             back_path = '/albums?artistid=%s' % artistid
+
+
+        #PVR
+        elif media_type == 'channelgroups': #CHANNEL GROUPS
+            channeltype = request.args['type']
+            if channeltype == 'tv':
+                file_type = 'video'
+                title = 'Live TV'
+            else:
+                file_type = 'audio'
+                title = 'Live Radio'
+
+            library = xbmc_get_channelgroups(xbmc, channeltype)
+            path = '/channelgroups?type=%s' % channeltype
+
+
+        elif media_type == 'channels': #CHANNELS
+            channeltype = request.args['type']
+            if channeltype == 'tv':
+                file_type = 'video'
+            else:
+                file_type = 'audio'
+
+            channelgroupid = request.args['channelgroupid']
+
+            library = xbmc_get_channels(xbmc, channeltype, int(channelgroupid))
+            path = '/channels?type=%s&channelgroupid=%s' % (channeltype, channelgroupid)
+            back_path = '/channelgroups?type=%s' % channeltype
+            title = library[0]['grouplabel']
 
 
         #FILES
@@ -840,6 +911,23 @@ def xbmc_get_file_path(xbmc, file_type, path):
     return files
 
 
+def xbmc_get_channelgroups(xbmc, channeltype):
+    return xbmc.PVR.GetChannelGroups(channeltype=channeltype)['channelgroups']
+
+def xbmc_get_channels(xbmc, channeltype, channelgroupid):
+
+    properties = ['channeltype', 'thumbnail', 'channel']
+    channels = xbmc.PVR.GetChannels(channelgroupid=channelgroupid, properties=properties)['channels']
+
+    #Get channel group label
+    groups = xbmc.PVR.GetChannelGroups(channeltype=channeltype)['channelgroups']
+    for group in groups:
+        if group['channelgroupid'] == channelgroupid:
+            channels[0]['grouplabel'] = group['label']
+            break
+
+    return channels
+
 def xbmc_get_details(xbmc, media_type, mediaid):
     logger.log('LIBRARY :: Retrieving %s details for %sid: %s' % (media_type, media_type, mediaid), 'INFO')
 
@@ -938,6 +1026,8 @@ def render_xbmc_library(template='library.html',
         back_pos=back_pos,
         show_info=get_setting_value('library_show_info') == '1',
         show_music=get_setting_value('library_show_music') == '1',
+        show_livetv=get_setting_value('library_show_livetv') == '1',
+        show_liveradio=get_setting_value('library_show_liveradio') == '1',
         show_files=get_setting_value('library_show_files') == '1',
         show_power=get_setting_value('library_show_power_buttons') == '1'
     )
