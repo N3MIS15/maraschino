@@ -35,7 +35,9 @@
     {% include "library/"+view+"_view.html" %}
   </div>
 
-  {% include "library/settings.html" %}
+  {% if settings %}
+    {% include "library/settings.html" %}
+  {% endif %}
 
   <div id="filter_holder">
     <div id="filter">
@@ -59,12 +61,17 @@
 {% endblock %}
 
 {% block power_holder %}
-  {% if path != '/files' %}
+  {% if path != '/files' and media != 'channels' and media != 'channelgroups' %}
     <div class="power" title="Update {{ file|title }} Library" id="{{ file }}-update">
       <img src="{{ url_for('static', filename='images/refresh.png') }}"/>
     </div>
     <div class="power" title="Clean {{ file|title }} Library" id="{{ file }}-clean">
       <img src="{{ url_for('static', filename='images/clean.png') }}"/>
+    </div>
+
+  {% elif media == 'channels' or media =='channelgroups' %}
+    <div class="power" title="Scan PVR EPG" id="pvr-scan">
+      <img src="{{ url_for('static', filename='images/refresh.png') }}"/>
     </div>
   {% endif %}
 {% endblock %}

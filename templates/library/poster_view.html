@@ -1,35 +1,35 @@
-<div class="poster_view">
-  <div class="inner">
-    {% for item in library %}
-      <div {% include "library/item_properties.html" %}>
-        <div
-          {% if media == 'seasons' %}
-            id="{{ item.season }}"
-          {% elif media == 'movies' and 'setid' in item %}
-            id="set{{ item.setid }}"
-          {% else %}
-            id="{{ item[media[:-1]+'id'] }}"
-          {% endif %}
-        >
+<div class="poster_view" align="center">
+  {% for item in library %}
+    <div {% include "library/item_properties.html" %}>
+      <div
+        {% if media == 'seasons' %}
+          id="{{ item.season }}"
+        {% elif media == 'movies' and 'setid' in item %}
+          id="set{{ item.setid }}"
+        {% else %}
+          id="{{ item[media[:-1]+'id'] }}"
+        {% endif %}
+      >
 
-          {% if 'art' in item %} <!-- FRODO ONLY -->
-            {% if 'poster' in item.art %}
-              <img class="poster" src="{{ item.art.poster|xbmc_image }}">
-            {% endif %}
-
-          {% else %}
-            {% if item.thumbnail %}
-              <img class="poster" src="{{ item.thumbnail|xbmc_image }}">
-            {% endif %}
+        {% if 'art' in item %} <!-- FRODO ONLY -->
+          {% if 'poster' in item.art %}
+            <img class="poster" src="{{ item.art.poster|xbmc_image }}">
           {% endif %}
 
-          {{ item.label }}
-
-          {% if item.playcount %}
-            <img class="watched" src="{{ url_for('static', filename='images/tick.png') }}">
+        {% else %}
+          {% if item.thumbnail %}
+            <img class="poster" src="{{ item.thumbnail|xbmc_image }}">
           {% endif %}
-        </div>
+        {% endif %}
+
+        <div class="label">{{ item.label }}</div>
+
+        {% if item.playcount %}
+          <div class="watched">
+            <img src="{{ url_for('static', filename='images/tick.png') }}">
+          </div>
+        {% endif %}
       </div>
-    {% endfor %}
-  </div>
+    </div>
+  {% endfor %}
 </div>

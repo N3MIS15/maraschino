@@ -714,10 +714,19 @@ $(document).ready(function() {
     });
   });
 
-  // change channel
+  // PVR change channel
   $(document).on('click', '#library .change_channel', function() {
     show_library_loading();
     $.get(WEBROOT + '/xhr/controls/change_channel/' + $(this).data('id'), function(data){
+      hide_library_loading();
+    });
+  });
+
+
+  // PVR scan
+  $(document).on('click', '#library #pvr-scan', function() {
+    show_library_loading();
+    $.get(WEBROOT + '/xhr/controls/pvr-scan', function(data){
       hide_library_loading();
     });
   });

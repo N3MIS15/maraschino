@@ -550,6 +550,16 @@ def xhr_xbmc_library_media(media_type=None):
 
 
         #PVR
+        elif media_type == 'pvr': #PVR home
+            file_type = None
+            title = 'PVR'
+            path = '/pvr'
+            library = [
+                {'label': 'TV', 'channeltype': 'tv'},
+                {'label': 'Radio', 'channeltype': 'radio'}
+            ]
+
+
         elif media_type == 'channelgroups': #CHANNEL GROUPS
             channeltype = request.args['type']
             if channeltype == 'tv':
@@ -561,6 +571,7 @@ def xhr_xbmc_library_media(media_type=None):
 
             library = xbmc_get_channelgroups(xbmc, channeltype)
             path = '/channelgroups?type=%s' % channeltype
+            back_path = '/pvr'
 
 
         elif media_type == 'channels': #CHANNELS
@@ -917,9 +928,9 @@ def xbmc_get_channelgroups(xbmc, channeltype):
 
 def xbmc_get_channels(xbmc, channeltype, channelgroupid):
 
-    properties = ['channeltype', 'thumbnail', 'channel']
+    properties = ['channeltype', 'thumbnail', 'channel', 'locked']
     channels = xbmc.PVR.GetChannels(channelgroupid=channelgroupid, properties=properties)['channels']
-
+    print json.dumps(channels, indent=4)
     #Get channel group label
     groups = xbmc.PVR.GetChannelGroups(channeltype=channeltype)['channelgroups']
     for group in groups:
@@ -1003,8 +1014,12 @@ def render_xbmc_library(template='library.html',
                         back_pos=None):
 
     if media:
-        settings = get_xbmc_media_settings(media)
-        view = get_setting_value('xbmc_%s_view' % media)
+        if media != 'pvr':
+            settings = get_xbmc_media_settings(media)
+            view = get_setting_value('xbmc_%s_view' % media)
+        else:
+            settings = None
+            view = 'list'
 
         if media in back_id:
             back_pos = back_id[media]
@@ -1027,8 +1042,7 @@ def render_xbmc_library(template='library.html',
         back_pos=back_pos,
         show_info=get_setting_value('library_show_info') == '1',
         show_music=get_setting_value('library_show_music') == '1',
-        show_livetv=get_setting_value('library_show_livetv') == '1',
-        show_liveradio=get_setting_value('library_show_liveradio') == '1',
+        show_pvr=get_setting_value('library_show_pvr') == '1',
         show_files=get_setting_value('library_show_files') == '1',
         show_power=get_setting_value('library_show_power_buttons') == '1'
     )

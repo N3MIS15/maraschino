@@ -40,7 +40,11 @@
             {% endif %}
 
             {% if 'record' in buttons %}
-              <!--<a class="button toggle_record">Record</a>-->
+              {% if item.locked %}
+                <a class="button toggle_record">LOCKED</a>
+              {% else %}
+                <a class="button toggle_record">Record</a>
+              {% endif %}
             {% endif %}
           </span>
         {% endif %}

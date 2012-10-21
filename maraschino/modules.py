@@ -195,15 +195,9 @@ AVAILABLE_MODULES = [
                 'type': 'bool',
             },
             {
-                'key': 'library_show_livetv',
+                'key': 'library_show_pvr',
                 'value': '0',
-                'description': 'Show Live TV (XBMC 12+ only)',
-                'type': 'bool',
-            },
-            {
-                'key': 'library_show_liveradio',
-                'value': '0',
-                'description': 'Show Live Radio (XBMC 12+ only)',
+                'description': 'Show PVR (XBMC 12+ only)',
                 'type': 'bool',
             },
             {

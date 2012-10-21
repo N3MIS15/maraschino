@@ -549,6 +549,15 @@ def xhr_controls(command):
             logger.log('CONTROLS :: %s' % xbmc_error, 'ERROR')
             return_response = 'failed'
 
+    elif command == 'pvr-scan':
+        logger.log('CONTROLS :: Scanning PVR EPG', 'INFO')
+        try:
+            xbmc.PVR.Scan()
+            return_response = 'success'
+        except:
+            logger.log('CONTROLS :: %s' % xbmc_error, 'ERROR')
+            return_response = 'failed'
+
     elif command == 'poweron':
         logger.log('CONTROLS :: Powering on XBMC machine', 'INFO')
         server_macaddress = serversettings['mac_address']
