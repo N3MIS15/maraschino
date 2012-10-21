@@ -1,6 +1,6 @@
 {% if media == 'movies' or media == 'episodes' %}
 
-  {% if 'setid' in item %}
+  {% if 'movieset' in item %}
     {% set action = 'get movieset' %}
   {% elif show_info %}
     {% set action = 'info' %}
@@ -17,18 +17,20 @@
 
 
 {% if view == 'large_list' or view == 'banner' %}
-	class="{{ action }} large"
+	class="{{ action }} large media"
 {% elif view == 'poster' %}
-	class="{{ action }} poster"
+	class="{{ action }} poster media"
 {% else %}
-	class="{{ action }}"
+	class="{{ action }} media"
 {% endif %}
 
 file-type="{{ file }}"
 media-type="{{ media[:-1] }}"
+data-id="{{ item[media[:-1]+'id'] }}"
+filter="{{ item.label }}"
 
-{% if media == 'movies' and 'setid' in item %}
-  data-url="/moviesets?setid={{ item.setid }}"
+{% if media == 'movies' and 'movieset' in item %}
+  data-url="/movies?setid={{ item.setid }}"
 {% elif media == 'tvshows' %}
 	data-url="/seasons?tvshowid={{ item.tvshowid }}"
 {% elif media == 'seasons' %}

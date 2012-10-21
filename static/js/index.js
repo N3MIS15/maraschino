@@ -3037,21 +3037,35 @@ $(document).ready(function() {
     }
   }
 
+    //////////////////
+   // XBMC LIBRARY //
+  //////////////////
 
-// browse XBMC library
+  // show xhrloading
+  function show_library_loading() {
+    $('#xbmc_library .back').hide();
+    $('#xbmc_library .xhrloading').show();
+  }
 
+  // hide xhrloading
+  function hide_library_loading() {
+    $('#xbmc_library .xhrloading').hide();
+    $('#xbmc_library .back').show();
+  }
+
+  // browse XBMC library
   $(document).on('click', '#xbmc_library .get', function() {
     var url = $(this).data('url');
     url = WEBROOT + '/xhr/xbmc_library' + url;
 
-    $('#xbmc_library .back').hide();
-    $('#xbmc_library .xhrloading').show();
+    show_library_loading();
 
     $.get(url, function(data) {
       $('#xbmc_library').replaceWith(data);
     });
   });
 
+  // Save media settings
   $(document).on('click', '#xbmc_library #settings .choices .save', function() {
     var settings = $('#xbmc_library #settings').find('form').serializeArray();
     var media = $('#xbmc_library #content').data('media');
@@ -3059,7 +3073,7 @@ $(document).ready(function() {
     url = WEBROOT + '/xhr/xbmc_library' + url;
     button = $(this);
 
-    add_loading_gif(button);
+    show_library_loading();
 
     $.post(
       WEBROOT + '/xhr/xbmc_library/save/'+media+'/',
@@ -3073,10 +3087,108 @@ $(document).ready(function() {
         }
         else {
           popup_message('Failed to save '+media+' settings');
-          remove_loading_gif(button);
+          hide_library_loading();
         }
       }
     );
+  });
+
+  //Check for resume position when clicking video
+  $(document).on('click', '#xbmc_library .resume_check', function() {
+    var li;
+    if ($(this).hasClass('button')) {
+      li = $(this).closest('.media');
+    }
+    else {
+      li = this;
+    }
+
+    var file_type = $(li).attr('file-type');
+    var media_type = $(li).attr('media-type');
+    var id = $(li).data('id');
+    show_library_loading();
+
+    $.get(WEBROOT + '/xhr/library/' + media_type + '/resume_check/' + id, function(data) {
+      hide_library_loading();
+      if (data.resume) {
+        var popup = $(data.template);
+        $('body').append(popup);
+        popup.showPopup({ dispose: true });
+      }
+      else {
+        $.get(WEBROOT + '/xhr/play/' + file_type + '/' + media_type + '/' + id);
+      }
+    });
+  });
+
+  // play button
+  $(document).on('click', '#xbmc_library .play', function() {
+    var li;
+    if ($(this).hasClass('button')) {
+      li = $(this).closest('.media');
+    }
+    else {
+      li = this;
+    }
+
+    var file_type = $(li).attr('file-type');
+    var media_type = $(li).attr('media-type');
+    var id = $(li).data('id');
+    show_library_loading();
+
+    $.get(WEBROOT + '/xhr/play/' + file_type + '/' + media_type + '/' + id, function() {
+      hide_library_loading();
+    });
+  });
+
+  // queue button
+  $(document).on('click', '#xbmc_library .queue', function() {
+    var li;
+    if ($(this).hasClass('button')) {
+      li = $(this).closest('.media');
+    }
+    else {
+      li = this;
+    }
+
+    var file_type = $(li).attr('file-type');
+    var media_type = $(li).attr('media-type');
+    var id = $(li).data('id');
+    show_library_loading();
+
+    $.get(WEBROOT + '/xhr/enqueue/' + file_type + '/' + media_type + '/' + id, function() {
+      hide_library_loading();
+    });
+  });
+
+  // list view buttons
+  $(document).on('click', '#xbmc_library .list_buttons .button', function(e) {
+    e.stopPropagation();
+  });
+
+  $(document).on('mouseenter', '#xbmc_library li', function() {
+    $('.watched', this).hide();
+    $('.list_buttons .button', this).show();
+  });
+
+  $(document).on('mouseleave', '#xbmc_library li', function() {
+    $('.list_buttons .button', this).hide();
+    $('.watched', this).show();
+  });
+
+  // Filter function
+
+  $(document).on('change keydown keyup search', '#xbmc_library .filter', function(e){
+    var filter = $(this).val().toLowerCase();
+    $('#xbmc_library .media').filter(function(index) {
+      return $(this).attr('filter').toLowerCase().indexOf(filter) < 0;
+    }).css('display', 'none');
+    $('#xbmc_library .media').filter(function(index) {
+      return $(this).attr('filter').toLowerCase().indexOf(filter) >= 0;
+    }).css('display', '');
+    if(e.which == 13){
+      $('#xbmc_library .media:visible:first').click();
+    }
   });
 
 });

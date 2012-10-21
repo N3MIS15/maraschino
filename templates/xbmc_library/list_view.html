@@ -1,26 +1,36 @@
 <ul class="list_view">
   {% for item in library %}
-    <li data-index="{{ item.index }}" {% include "xbmc_library/item_properties.html" %}>
+    <li {% include "xbmc_library/item_properties.html" %}>
       <div
         {% if media == 'seasons' %}
           id="{{ item.season }}"
-        {% elif media == 'movies' and 'setid' in item %}
+
+        {% elif media == 'movies' and 'movieset' in item %}
           id="set{{ item.setid }}"
+
         {% else %}
           id="{{ item[media[:-1]+'id'] }}"
+
         {% endif %}
       >
 
         {{ item.label }}
 
-        <span class="list_buttons">
-          {% if show_info %}
-            <a class="button" id="play">Play</a>
-          {% else %}
-            <a class="button" id="info">Info</a>
-          {% endif %}
-          <a class="button" id="queue">Queue</a>
-        </span>
+        {% if not 'movieset' in item %}
+          <span class="list_buttons">
+            {% if show_info %}
+              <a class="button play">Play</a>
+            {% else %}
+              {% if not media == 'seasons' %}
+                <a
+                  class="button get"
+                  data-url="{{path}}{{'?' if not '?' in path else '&'}}{{media[:-1]}}id={{item[media[:-1]+'id']}}"
+                >Info</a>
+              {% endif %}
+            {% endif %}
+            <a class="button queue">Queue</a>
+          </span>
+        {% endif %}
 
         {% if item.playcount %}
           <img class="watched" src="{{ url_for('static', filename='images/tick.png') }}">

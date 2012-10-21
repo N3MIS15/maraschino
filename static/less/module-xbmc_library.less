@@ -2,6 +2,10 @@
 {
   position: relative;
 
+  h2 {
+    padding-right: 55px;
+  }
+
   .xhrloading {
     position: absolute;
     right: 12px;
@@ -43,12 +47,12 @@
     }
   }
 
-  ul, div.poster_view {
+  #content {
     max-height: 240px;
     overflow: auto;
   }
 
-  li, div.poster, .back {
+  .list_view li, div.poster, .back, .banner_view li {
     background: url('/@{webroot}/images/alpha/fff_10.png');
     border: 1px solid #222;
     cursor: pointer;
@@ -197,6 +201,43 @@
     }
   }
 
+  .media_details {
+    .posterart,
+    .bannerart,
+    .episodeart,
+    .artistart,
+    .albumart, {
+      float: right;
+      box-shadow: 0 0 1px 1px #333;
+      margin: 0 0 10px 15px;
+    }
+
+    .posterart {
+      max-width: 130px;
+      height: auto;
+    }
+
+    .bannerart {
+      max-height: 70px;
+      width: auto;
+    }
+
+    .episodeart {
+      max-width: 200px;
+      height: auto;
+    }
+
+    .artistart {
+      max-width: 200px;
+      height: auto;
+    }
+
+    .albumart {
+      max-width: 160px;
+      height: auto;
+    }
+
+  }
 }
 
 .f_settings_mode #xbmc_library{

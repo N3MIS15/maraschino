@@ -1,10 +1,9 @@
 {% extends "xbmc_library/base.html" %}
-
+{% block xbmc_library_title %}XBMC Library{% endblock %}
 {% block xbmc_library_content %}
-	<ul class="list_view">
-	  <li class="get" data-url="/movies">Movies</li>
-	  <li class="get" data-url="/tvshows">TV Shows</li>
-	  <li class="get" data-url="/artists">Music</li>
-	  <li>Files</li>
-	</ul>
+  <ul class="list_view">
+    <li class="get" data-url="/movies">Movies</li>
+    <li class="get" data-url="/tvshows">TV Shows</li>
+    <li class="get" data-url="/artists">Music</li>
+  </ul>
 {% endblock %}

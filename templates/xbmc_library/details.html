@@ -1,0 +1,46 @@
+{% extends "xbmc_library/base.html" %}
+{% block xbmc_library_title %}{{ title }}{% endblock %}
+{% block xbmc_library_content %}
+
+<div class="get back" data-url="{{ back_path }}">&laquo;</div>
+
+  <div class="media_details">
+    {% if library.thumbnail %}
+      <img
+        {% if media == 'episodes' %}
+          class="episodeart"
+        {% elif media == 'artists' %}
+          class="artistart"
+        {% elif media == 'albums' %}
+          class="albumart"
+        {% elif media == 'tvshows' and 'banner' in library %}
+          class="bannerart"
+        {% else %}
+          class="posterart"
+        {% endif %}
+          src="{{ library.thumbnail|xbmc_image }}">
+    {% endif %}
+
+      <table border="0">
+        <tr>
+          <td width="75" style="font-weight:bold;">Director:</td>
+          <td style="font-size: 0.950em;">{{ library.director }}</td>
+        </tr>
+        <tr>
+          <td style="font-weight:bold;">Year:</td>
+          <td style="font-size: 0.950em;">{{ library.year }}</td>
+        </tr>
+        <tr>
+          <td style="font-weight:bold;">Genre:</td>
+          <td style="font-size: 0.950em;">{{ library.genre|truncate(30, 'false') }}</td>
+        </tr>
+        <tr>
+          <td style="font-weight:bold;">Rating:</td>
+          <td style="font-size: 0.950em;">{{ library.rating|float|round(1, 'common') }} / 10</td>
+        </tr>
+      </table>
+      <br /><span style="font-weight:bold;">Plot:</span>
+      <br /><span style="font-size: 0.950em;">{{ library.plot }}</span>
+  </div>
+
+{% endblock %}

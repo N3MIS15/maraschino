@@ -4,20 +4,26 @@
       <div
         {% if media == 'seasons' %}
           id="{{ item.season }}"
+
         {% elif media == 'movies' and 'setid' in item %}
           id="set{{ item.setid }}"
+
         {% else %}
           id="{{ item[media[:-1]+'id'] }}"
+
         {% endif %}
       >
         {% if item.thumbnail %}
           <img
             {% if media == 'episodes' %}
               class="thumbnail"
+
             {% elif media == 'artists' or media == 'albums' %}
               class="square"
+
             {% else %}
               class="poster"
+
             {% endif %}
             src="{{ item.thumbnail|xbmc_image }}"
           >
@@ -25,10 +31,13 @@
         <div
           {% if media == 'episodes' %} 
             class="details thumbnail"
+
           {% elif media == 'artists' or media == 'albums' %}
             class="details square"
+
           {% else %}
             class="details"
+
           {% endif %}
         >
           <span class="title">
@@ -36,22 +45,28 @@
           </span><br />
 
           <span>
-            {% if item.year %}
+            {% if media == 'movies' %}
               Year: {{ item.year }}
-            {% elif item.premiered %}
+
+            {% elif media == 'tvshows' %}
               Premiered: {{ item.premiered }}
-            {% elif item.firstaired %}
+
+            {% elif media == 'seasons' %}
+              {{ item.episode }} Episodes
+
+            {% elif media == 'episodes' %}
               First Aired: {{ item.firstaired }}
-            {% elif item.episode %}
-              {{ item.episode }} episodes
+
             {% endif %}
           </span><br />
 
           <span>
-            {% if item.rating %}
+            {% if media == 'seasons' %}
+              {{ item.unwatched }} Unwatched
+
+            {% elif item.rating %}
               Rating: {{ item.rating|float|round(1, 'common') }}
-            {% elif item.episode %}
-              {{ item.watched }} watched
+
             {% endif %}
           </span>
         </div>
