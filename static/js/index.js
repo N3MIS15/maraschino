@@ -2753,6 +2753,15 @@ $(document).ready(function() {
     });
   });
 
+  // VIEW HELP
+  $(document).on('click', '#view_help', function() {
+    $.get(WEBROOT + '/xhr/help', function(data){
+      var popup = $(data);
+      $('body').append(popup);
+      popup.showPopup({ dispose: true });
+    });
+  });
+
   // RESTART
   $(document).on('click', '#manage_settings #restart', function(){
     var popup = $('<div id="updater" class="dialog" align="center"><div class="close" style="display:none;"></div><p>Restarting  <img src="' + WEBROOT + '/static/images/xhrloading.gif"/></p></div>');
