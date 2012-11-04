@@ -1,0 +1,25 @@
+<div id="help_dialog" class="dialog">
+  <style type="text/css">
+  div.inline { float:left; margin:10px; width:auto;}
+  .clearBoth { clear:both; }
+  </style>
+  <div class="close">x</div>
+
+  <h2>Welcome to Maraschino</h2>
+  <div class="head">
+    <span class="loading"></span>
+    <a class="button addloading" data-xhr_url="intro">Intro</a>
+    <a class="button addloading" data-xhr_url="modules">Modules</a>
+    <a class="button addloading" data-xhr_url="searh">Search</a>
+    <a class="button addloading" data-xhr_url="remote">Remote Keyboard</a>
+    <a class="button addloading" data-xhr_url="servers">Servers</a>
+    <a class="button addloading" data-xhr_url="manage">Manage</a>
+  </div>
+
+{% block help_content %}
+{% endblock %}
+
+  <br>
+    <center>Copyright (C) 2012 Bradley Abrahams and other contributors<br>
+    <p style="font-size:75%;">Released under the <a href="https://github.com/mrkipling/maraschino/blob/master/LICENSE" target="_blank">MIT License</a>.</p></center>
+</div>
