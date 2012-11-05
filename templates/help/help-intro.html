@@ -1,17 +1,30 @@
-{% extends "/help/help-base.html" %}
+{% extends "help/help-base.html" %}
 
-{% block intro %}
+{% block help_content %}
 <div class="help">
   <br><strong>What is Maraschino?</strong><br><br>
     It is a Web Application that runs on your computer in the background, monitoring your Home Theatre PC's web applications and presents their current status in a widget type architecture.<br><br><br>
     Maraschino currently offers support for these programs -<br><br>
-      <div class="inline"><a href="http://www.sabnzbd.org" target="_blank"><img title="SabNZBd+" src="static/images/applications/SabNZBd.png" height="40" width="40" alt="SabNZBd+"><p style="font-size:75%;">SabNZBd+</p></a></div>
-      <div class="inline"><a href="http://www.sickbeard.com" target="_blank"><img title="Sickbeard" src="static/images/applications/Sickbeard.png" height="40" width="40" alt="Sickbeard"><p style="font-size:75%;">Sickbeard</p></a></div>
-      <div class="inline"><a href="http://www.couchpota.to" target="_blank"><img title="CouchPotato" src="static/images/applications/CouchPotato.png" height="40" width="40" alt="CouchPotato"><p style="font-size:75%;">CouchPotato</p></a></div>
-      <div class="inline"><a href="http://https://github.com/rembo10/headphones" target="_blank"><img title="HeadPhones" src="static/images/applications/HeadPhones.png" height="40" width="40" alt="HeadPhones"><p style="font-size:75%;">HeadPhones</p></a></div>
-      <div class="inline"><a href="http://www.utorrent.com" target="_blank"><img title="uTorrent" src="static/images/applications/uTorrent.png" height="40" width="40" alt="uTorrent"><p style="font-size:75%;">uTorrent</p></a></div>
-      <div class="inline"><a href="http://www.transmission.com" target="_blank"><img title="Transmission" src="static/images/applications/Transmission.png" height="40" width="40" alt="Transmission"><p style="font-size:75%;">Transmission</p></a></div>
-      <div class="inline"><a href="http://www.xbmc.org" target="_blank"><img title="XBMC" src="static/images/applications/XBMC.png" height="40" width="40" alt="XBMC"><p style="font-size:75%;">XBMC</p></a></div>
+
+{% macro inline(title, href, img) %}
+
+  <div class="inline">
+    <a href="{{href}}" target="_blank">
+      <img title="{{title}}" src="{{img}}" height="40" width="40" alt="{{title}}">
+      <p style="font-size:75%;">{{title}}</p>
+    </a>
+  </div>
+
+{% endmacro %}
+
+  {{ inline('SabNZBd+', 'http://www.sabnzbd.org', url_for('static', filename='images/applications/SabNZBd.png')) }}
+  {{ inline('Sickbeard', 'http://www.sickbeard.com', url_for('static', filename='images/applications/Sickbeard.png')) }}
+  {{ inline('CouchPotato', 'http://www.couchpota.to', url_for('static', filename='images/applications/CouchPotato.png')) }}
+  {{ inline('HeadPhones', 'https://github.com/rembo10/headphones', url_for('static', filename='images/applications/HeadPhones.png')) }}
+  {{ inline('uTorrent', 'http://www.uTorrent.com', url_for('static', filename='images/applications/uTorrent.png')) }}
+  {{ inline('Transmission', 'http://www.transmissionbt.com/', url_for('static', filename='images/applications/Transmission.png')) }}
+  {{ inline('XBMC', 'http://www.xbmc.org', url_for('static', filename='images/applications/XBMC.png')) }}
+
       <div class="clearBoth"></div>
     <strong>Features</strong><br><br>
   <ul>
