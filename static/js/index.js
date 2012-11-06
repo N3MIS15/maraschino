@@ -1917,27 +1917,18 @@ $(document).ready(function() {
 
   /********* Help Dialog *********/
 
-  $(document).on('click', '#help .addloading', function() {
-    var loading = $('#help .loading');
+  $(document).on('click', '#help_dialog .addloading', function() {
+    var loading = $('#help_dialog .head .loading');
     add_loading_gif(loading);
   });
 
 
-  $(document).on('click', '#help .button', function() {
+  $(document).on('click', '#help_dialog .head .button', function() {
     $.get(WEBROOT + '/xhr/help/' + $(this).data('xhr_url'), function(data){
-      $('#help').replaceWith(data);
-    });
-  });
-
-  $(document).on('click', '#help .button', function() {
-    $.get(WEBROOT + '/xhr/help/intro' + $(this).data('xhr_url'), function(data){
-      $('#help').replaceWith(data);
-    });
-  });
-
-  $(document).on('click', '#help .button', function() {
-    $.get(WEBROOT + '/xhr/help/modules' + $(this).data('xhr_url'), function(data){
-      $('#help').replaceWith(data);
+      var popup = $(data);
+      $('#help_dialog .close').click();
+      $('body').append(popup);
+      popup.showPopup({ dispose: true });
     });
   });
 
