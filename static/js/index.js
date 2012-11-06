@@ -1905,6 +1905,32 @@ $(document).ready(function() {
   }
   /********* END TableSorter byte size sorting ***********/
 
+  /********* Help Dialog *********/
+
+  $(document).on('click', '#help .addloading', function() {
+    var loading = $('#help .loading');
+    add_loading_gif(loading);
+  });
+
+
+  $(document).on('click', '#help .button', function() {
+    $.get(WEBROOT + '/xhr/help/' + $(this).data('xhr_url'), function(data){
+      $('#help').replaceWith(data);
+    });
+  });
+
+  $(document).on('click', '#help .button', function() {
+    $.get(WEBROOT + '/xhr/help/intro' + $(this).data('xhr_url'), function(data){
+      $('#help').replaceWith(data);
+    });
+  });
+
+  $(document).on('click', '#help .button', function() {
+    $.get(WEBROOT + '/xhr/help/modules' + $(this).data('xhr_url'), function(data){
+      $('#help').replaceWith(data);
+    });
+  });
+
   /********* Trakt Plus *********/
 
   $(document).on('click', '#traktplus .addloading', function() {
