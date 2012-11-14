@@ -93,7 +93,7 @@ cat_nzbmatrix = [
 def cat_newznab(url):
     categories = [{'id': '0', 'name': 'Everything'}]
     try:
-        result = xmltodict.parse(urllib.urlopen(url + '/api?t=caps&o=json').read())
+        result = xmltodict.parse(urllib.urlopen(url + '/api?t=caps&o=xml').read())
     except:
         return []
 
