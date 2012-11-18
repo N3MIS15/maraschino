@@ -3,7 +3,7 @@ import os
 
 from maraschino import app, RUNDIR, logger
 from socket import *
-from xbmc.xbmcclient import *
+from XBMC.xbmcclient import *
 from maraschino.tools import get_file_list
 from maraschino.models import XbmcServer
 

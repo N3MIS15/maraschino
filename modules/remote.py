@@ -2,7 +2,7 @@ from flask import Flask, jsonify, render_template
 
 from maraschino import app, RUNDIR
 from socket import *
-from xbmc.xbmcclient import XBMCClient
+from XBMC.xbmcclient import XBMCClient
 from maraschino.tools import get_setting_value
 from maraschino.noneditable import *
 

@@ -1,11 +1,7 @@
-try:
-    import json
-except ImportError:
-    import simplejson as json
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, json
 import hashlib, jsonrpclib, urllib
 
-from Maraschino import app
+from maraschino import app
 from maraschino.noneditable import *
 from maraschino.tools import *
 

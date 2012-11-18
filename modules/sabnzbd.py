@@ -1,16 +1,10 @@
-try:
-    import json
-except ImportError:
-    import simplejson as json
-
-from flask import jsonify, render_template, request
+from flask import jsonify, render_template, request, json
 import urllib
 import urllib2
 from jinja2.filters import FILTERS
 
-from Maraschino import app
 from maraschino.tools import *
-from maraschino import logger
+from maraschino import app, logger
 
 
 def sab_http():

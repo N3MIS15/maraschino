@@ -6,7 +6,7 @@ from flask import Flask, jsonify, render_template
 import utorrentclient
 
 from datetime import timedelta
-from Maraschino import app
+from maraschino import app
 from maraschino.tools import *
 
 @app.route('/xhr/utorrent/')

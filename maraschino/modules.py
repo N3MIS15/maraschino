@@ -12,9 +12,7 @@ from maraschino.database import db_session
 import maraschino
 import copy
 
-from maraschino import logger
-
-from Maraschino import app
+from maraschino import app, logger
 from maraschino.tools import *
 
 from maraschino.database import *

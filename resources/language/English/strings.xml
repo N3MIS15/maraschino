@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- Server Settings -->
+    <string id="1010">Server</string>
+    <string id="1011">Port</string>
+    <string id="1012">Hostname (optional) </string>
+    <string id="1013">Webroot (optional)</string>
+
+    <!-- Extra Settings -->
+    <string id="1020">Extra</string>
+    <string id="1021">Kiosk mode</string>
+</strings>

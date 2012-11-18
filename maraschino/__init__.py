@@ -6,9 +6,19 @@ import os
 import subprocess
 import threading
 import wsgiserver
-from Maraschino import app
 from Logger import maraschinoLogger
 from apscheduler.scheduler import Scheduler
+from flask import Flask
+
+# Create Flask instance
+app = Flask(__name__)
+
+@app.teardown_request
+def shutdown_session(exception=None):
+    """This function is called as soon as a session is shutdown and makes sure, that the db session is also removed."""
+    from maraschino.database import db_session
+    db_session.remove()
+
 
 FULL_PATH = None
 RUNDIR = None
@@ -55,6 +65,17 @@ def initialize():
 
         if __INITIALIZED__:
             return False
+
+        app.root_path = RUNDIR
+        app.static_path = '/static'
+        app.add_url_rule(
+            app.static_path + '/<path:filename>',
+            endpoint='static',
+            view_func=app.send_static_file
+        )
+
+        from jinja2 import FileSystemLoader
+        app.jinja_loader = FileSystemLoader(os.path.join(RUNDIR, 'templates'))
 
         # Set up logger
         if not LOG_FILE:

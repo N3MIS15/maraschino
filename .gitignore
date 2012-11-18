@@ -2,6 +2,7 @@
 #  Compiled source   #
 ######################
 *.pyc
+*.pyo
 
 ######################
 #    User Related    #

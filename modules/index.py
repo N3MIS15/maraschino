@@ -53,7 +53,7 @@ def index():
     # only changes on page refresh
 
     background = None
-
+    print 'pass'
     if get_setting_value('random_backgrounds') == '1':
         try:
             backgrounds = []
@@ -123,7 +123,7 @@ def index():
         show_currently_playing = True
     else:
         show_currently_playing = int(get_setting_value('show_currently_playing')) > 0
-
+    print 'pass2'
     return render_template('index.html',
         modules = modules,
         num_columns = num_columns,
