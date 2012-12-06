@@ -141,7 +141,7 @@ def initialize():
         if '--webroot' not in str(ARGS):
             WEBROOT = get_setting_value('maraschino_webroot')
             if WEBROOT is None or DEVELOPMENT:
-                WEBROOT = '/'
+                WEBROOT = ''
 
         if WEBROOT:
             if WEBROOT[0] != '/':
