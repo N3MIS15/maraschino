@@ -1,15 +1,10 @@
-"""A library for integrating Python's builtin ``ssl`` library with CherryPy.
+"""A library for integrating Python's builtin ``ssl`` library with Cheroot.
 
-The ssl module must be importable for SSL functionality.
+The builtin ssl module must be importable for SSL functionality.
 
-To use this module, set ``CherryPyWSGIServer.ssl_adapter`` to an instance of
+To use this module, set ``HTTPServer.ssl_adapter`` to an instance of
 ``BuiltinSSLAdapter``.
 """
-
-try:
-    import ssl
-except ImportError:
-    ssl = None
 
 try:
     from _pyio import DEFAULT_BUFFER_SIZE
@@ -19,13 +14,18 @@ except ImportError:
     except ImportError:
         DEFAULT_BUFFER_SIZE = -1
 
+try:
+    import ssl
+except ImportError:
+    ssl = None
+
 import sys
 
-from cherrypy import wsgiserver
+from cheroot import errors, server, ssllib
 
 
-class BuiltinSSLAdapter(wsgiserver.SSLAdapter):
-    """A wrapper for integrating Python's builtin ssl module with CherryPy."""
+class BuiltinSSLAdapter(ssllib.SSLAdapter):
+    """A wrapper for integrating Python's builtin ssl module with Cheroot."""
     
     certificate = None
     """The filename of the server SSL certificate."""
@@ -53,14 +53,14 @@ class BuiltinSSLAdapter(wsgiserver.SSLAdapter):
         except ssl.SSLError:
             e = sys.exc_info()[1]
             if e.errno == ssl.SSL_ERROR_EOF:
-                # This is almost certainly due to the cherrypy engine
+                # This is almost certainly due to someone
                 # 'pinging' the socket to assert it's connectable;
                 # the 'ping' isn't SSL.
                 return None, {}
             elif e.errno == ssl.SSL_ERROR_SSL:
                 if e.args[1].endswith('http request'):
                     # The client is speaking HTTP to an HTTPS server.
-                    raise wsgiserver.NoSSLError
+                    raise errors.NoSSLError
                 elif e.args[1].endswith('unknown protocol'):
                     # The client is speaking some non-HTTP protocol.
                     # Drop the conn.
@@ -82,10 +82,6 @@ class BuiltinSSLAdapter(wsgiserver.SSLAdapter):
             }
         return ssl_environ
     
-    if sys.version_info >= (3, 0):
-        def makefile(self, sock, mode='r', bufsize=DEFAULT_BUFFER_SIZE):
-            return wsgiserver.CP_makefile(sock, mode, bufsize)
-    else:
-        def makefile(self, sock, mode='r', bufsize=DEFAULT_BUFFER_SIZE):
-            return wsgiserver.CP_fileobject(sock, mode, bufsize)
+    def makefile(self, sock, mode='r', bufsize=DEFAULT_BUFFER_SIZE):
+        return server.makefile(sock, mode, bufsize)
 

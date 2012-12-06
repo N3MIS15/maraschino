@@ -1,9 +1,9 @@
-"""A library for integrating pyOpenSSL with CherryPy.
+"""A library for integrating pyOpenSSL with Cheroot.
 
 The OpenSSL module must be importable for SSL functionality.
 You can obtain it from http://pyopenssl.sourceforge.net/
 
-To use this module, set CherryPyWSGIServer.ssl_adapter to an instance of
+To use this module, set HTTPServer.ssl_adapter to an instance of
 SSLAdapter. There are two ways to use SSL:
 
 Method One
@@ -34,7 +34,8 @@ import socket
 import threading
 import time
 
-from cherrypy import wsgiserver
+from cheroot import errors, py2makefile
+from cheroot.ssllib import SSLAdapter
 
 try:
     from OpenSSL import SSL
@@ -43,7 +44,7 @@ except ImportError:
     SSL = None
 
 
-class SSL_fileobject(wsgiserver.CP_fileobject):
+class SSL_makefile(py2makefile.makefile):
     """SSL file object attached to a socket object."""
     
     ssl_timeout = 3
@@ -72,7 +73,7 @@ class SSL_fileobject(wsgiserver.CP_fileobject):
                     return ""
                 
                 errnum = e.args[0]
-                if is_reader and errnum in wsgiserver.socket_errors_to_ignore:
+                if is_reader and errnum in errors.socket_errors_to_ignore:
                     return ""
                 raise socket.error(errnum)
             except SSL.Error, e:
@@ -87,9 +88,9 @@ class SSL_fileobject(wsgiserver.CP_fileobject):
                 
                 if thirdarg == 'http request':
                     # The client is talking HTTP to an HTTPS server.
-                    raise wsgiserver.NoSSLError()
+                    raise errors.NoSSLError()
                 
-                raise wsgiserver.FatalSSLAlert(*e.args)
+                raise errors.FatalSSLAlert(*e.args)
             except:
                 raise
             
@@ -98,7 +99,7 @@ class SSL_fileobject(wsgiserver.CP_fileobject):
     
     def recv(self, *args, **kwargs):
         buf = []
-        r = super(SSL_fileobject, self).recv
+        r = super(SSL_makefile, self).recv
         while True:
             data = self._safe_call(True, r, *args, **kwargs)
             buf.append(data)
@@ -107,11 +108,11 @@ class SSL_fileobject(wsgiserver.CP_fileobject):
                 return "".join(buf)
     
     def sendall(self, *args, **kwargs):
-        return self._safe_call(False, super(SSL_fileobject, self).sendall,
+        return self._safe_call(False, super(SSL_makefile, self).sendall,
                                *args, **kwargs)
 
     def send(self, *args, **kwargs):
-        return self._safe_call(False, super(SSL_fileobject, self).send,
+        return self._safe_call(False, super(SSL_makefile, self).send,
                                *args, **kwargs)
 
 
@@ -150,8 +151,8 @@ class SSLConnection:
             self._lock.release()
 
 
-class pyOpenSSLAdapter(wsgiserver.SSLAdapter):
-    """A wrapper for integrating pyOpenSSL with CherryPy."""
+class pyOpenSSLAdapter(SSLAdapter):
+    """A wrapper for integrating pyOpenSSL with Cheroot."""
     
     context = None
     """An instance of SSL.Context."""
@@ -248,9 +249,9 @@ class pyOpenSSLAdapter(wsgiserver.SSLAdapter):
     def makefile(self, sock, mode='r', bufsize=-1):
         if SSL and isinstance(sock, SSL.ConnectionType):
             timeout = sock.gettimeout()
-            f = SSL_fileobject(sock, mode, bufsize)
+            f = SSL_makefile(sock, mode, bufsize)
             f.ssl_timeout = timeout
             return f
         else:
-            return wsgiserver.CP_fileobject(sock, mode, bufsize)
+            return py2makefile.makefile(sock, mode, bufsize)
 

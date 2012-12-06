@@ -739,6 +739,16 @@ SERVER_SETTINGS = [
         'value': '',
         'description': 'Maraschino webroot',
     },
+    {
+        'key': 'maraschino_ssl_cert',
+        'value': '',
+        'description': 'SSL certificate location',
+    },
+    {
+        'key': 'maraschino_ssl_key',
+        'value': '',
+        'description': 'SSL key location',
+    },
 ]
 
 SEARCH_SETTINGS = [

@@ -5,7 +5,9 @@ import sys
 import os
 import subprocess
 import threading
-import wsgiserver
+import cheroot.wsgi
+import cheroot.ssllib.ssl_builtin
+
 from Maraschino import app
 from Logger import maraschinoLogger
 from apscheduler.scheduler import Scheduler
@@ -31,6 +33,7 @@ KIOSK = False
 DATA_DIR = None
 SCRIPT_DIR = None
 THREADS = []
+SSL = False
 
 AUTH = {
     'username': None,
@@ -51,7 +54,7 @@ def initialize():
 
         global __INITIALIZED__, app, FULL_PATH, RUNDIR, ARGS, DAEMON, PIDFILE, VERBOSE, LOG_FILE, LOG_DIR, logger, PORT, SERVER, DATABASE, AUTH, \
                 UPDATER, CURRENT_COMMIT, LATEST_COMMIT, COMMITS_BEHIND, COMMITS_COMPARE_URL, USE_GIT, WEBROOT, HOST, KIOSK, DATA_DIR, SCRIPT_DIR, \
-                THREADS, FIRST_RUN
+                THREADS, FIRST_RUN, SSL
 
         if __INITIALIZED__:
             return False
@@ -138,15 +141,32 @@ def initialize():
         if '--webroot' not in str(ARGS):
             WEBROOT = get_setting_value('maraschino_webroot')
             if WEBROOT is None or DEVELOPMENT:
-                WEBROOT = ''
+                WEBROOT = '/'
 
         if WEBROOT:
             if WEBROOT[0] != '/':
                 WEBROOT = '/' + WEBROOT
-            d = wsgiserver.WSGIPathInfoDispatcher({WEBROOT: app})
+            d = cheroot.wsgi.WSGIPathInfoDispatcher({WEBROOT: app})
         else:
-            d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
-        SERVER = wsgiserver.CherryPyWSGIServer((HOST, PORT), d)
+            d = cheroot.wsgi.WSGIPathInfoDispatcher({'/': app})
+
+        server_params = {
+            'bind_addr': (HOST, PORT),
+            'wsgi_app': d,
+        }
+
+        if SSL:
+            ssl_key = get_setting_value('maraschino_ssl_key')
+            ssl_cert = get_setting_value('maraschino_ssl_cert')
+            if ssl_key and ssl_cert:
+                if os.path.exists(ssl_key) and os.path.exists(ssl_cert):
+                    server_params['ssl_adapter'] = cheroot.ssllib.ssl_builtin.BuiltinSSLAdapter(ssl_cert, ssl_key)
+                else:
+                    logger.log('SSL key and cert do not exist, reveting to unsecure', 'WARNING')
+            else:
+                logger.log('Both SSL key and cert must be set, reveting to unsecure', 'WARNING')
+
+        SERVER = cheroot.wsgi.WSGIServer(**server_params)
 
         __INITIALIZED__ = True
         return True

@@ -127,6 +127,10 @@ def main():
                  action="store_true",
                  dest='noupdate',
                  help='Disable the internal updater')
+    p.add_option('--ssl',
+                 action="store_true",
+                 dest='ssl',
+                 help='Enable secure server')
 
     # parse command line for defined options
     options, args = p.parse_args()
@@ -174,6 +178,9 @@ def main():
 
     if options.noupdate:
         maraschino.UPDATER = False
+
+    if options.ssl:
+        maraschino.SSL = True
 
     maraschino.RUNDIR = rundir
     maraschino.DATA_DIR = data_dir
