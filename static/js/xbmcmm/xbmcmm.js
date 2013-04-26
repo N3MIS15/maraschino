@@ -347,7 +347,7 @@ $(document).ready(function() {
         if (setid === '0') {
           setid = data.setid;
           $('.media_list #0').removeClass('active');
-          $('<li class="item active" data-type="movieset" id="'+setid+'"><a href="#">New Set</a></li>').appendTo('.media_list');
+          $('<li class="item active" data-type="movieset" id="'+setid+'"><a href="#">'+setlabel+'</a></li>').appendTo('.media_list');
         }
 
         $('.media_list #'+setid).click();

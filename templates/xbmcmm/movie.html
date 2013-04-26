@@ -16,7 +16,7 @@
           {% endif %}
         </select>
       {% elif name == 'playcount' %}
-        <input id="id_{{ name }}" name="{{ name }}" type="checkbox" {{ 'checked' if movie.playcount }} class="span12">
+        <input class="pull-left" id="id_{{ name }}" name="{{ name }}" type="checkbox" {{ 'checked' if movie.playcount }} class="span12">
       {% else %}
         <input {% if tooltip %}rel="tooltip" title="{{ tooltip }}"{% endif %} id="id_{{ name }}" name="{{ name }}" type="text" value="{{ movie[name]|float|round(1, 'common') if name == 'rating' else movie[name] }}" class="span12">
       {% endif %}
@@ -97,7 +97,7 @@
             {{ control_group('set', 'Set') }}
             {{ control_group('tag', 'Tags', 'Separate with " / "') }}
             {{ control_group('trailer', 'Trailer') }}
-            {{ control_group('playcount', 'Mark as Watched') }}
+            {{ control_group('playcount', 'Watched') }}
             {{ hidden_input('imdbnumber', False) }}
             {{ hidden_input('fanart') }}
             {{ hidden_input('banner') }}

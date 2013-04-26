@@ -822,35 +822,36 @@ class maraUI(tvdb_api.BaseUI):
         tvdb_show_list = shows
         return shows[0]
 
-    def tvdb_show_search(show_name):
-        t = tvdb_api.Tvdb(apikey=tvdb_apikey, custom_ui=maraUI)
-        global tvdb_show_list
-        try:
-            t[show_name]
-            shows = tvdb_show_list
-        except tvdb_exceptions.tvdb_shownotfound:
-            logger.log('Unable to find' + show_name + 'on TVDB', 'ERROR')
-            return []
-        except tvdb_exceptions.tvdb_error:
-            logger.log('TVDB :: Cannot connect to TVDB', 'ERROR')
-            return []
 
-        return shows
+def tvdb_show_search(show_name):
+    t = tvdb_api.Tvdb(apikey=tvdb_apikey, custom_ui=maraUI)
+    global tvdb_show_list
+    try:
+        t[show_name]
+        shows = tvdb_show_list
+    except tvdb_exceptions.tvdb_shownotfound:
+        logger.log('Unable to find' + show_name + 'on TVDB', 'ERROR')
+        return []
+    except tvdb_exceptions.tvdb_error:
+        logger.log('TVDB :: Cannot connect to TVDB', 'ERROR')
+        return []
+    return shows
 
-    def tvdb_str2list(show=None, episode=None):
-        def split_var(var):
-            return ' / '.join([x for x in var.split('|') if x])
 
-        if show:
-            if show['genre']:
-                show['genre'] = split_var(show['genre'])
-            return lst2str(show)
-        else:
-            if episode['writer']:
-                episode['writer'] = split_var(episode['writer'])
-            if episode['director']:
-                episode['director'] = split_var(episode['director'])
-            return lst2str(episode)
+def tvdb_str2list(show=None, episode=None):
+    def split_var(var):
+        return ' / '.join([x for x in var.split('|') if x])
+
+    if show:
+        if show['genre']:
+            show['genre'] = split_var(show['genre'])
+        return lst2str(show)
+    else:
+        if episode['writer']:
+            episode['writer'] = split_var(episode['writer'])
+        if episode['director']:
+            episode['director'] = split_var(episode['director'])
+        return lst2str(episode)
 
 
 @app.route('/xhr/tvdb_show/<show_name>/')

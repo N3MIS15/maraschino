@@ -1,4 +1,4 @@
-<div class="details">
+<div class="main">
   {% if movieset %}
     <div
       class="setid"
@@ -17,7 +17,7 @@
       <ul class="nav nav-list well">
         <li class="divider"></li>
         {% for movie in movieset.movies %}
-          <li class="remove_from_set" title="Remove from set" id="{{ movie.movieid }}">
+          <li class="item remove_from_set" title="Remove from set" id="{{ movie.movieid }}">
             <a href="#">
               {{ movie.label }}
               <i class="icon-remove pull-right"></i>
