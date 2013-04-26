@@ -1,0 +1,49 @@
+<div class="album_details">
+{% if item.albumdetails %}
+  {% set album = item.albumdetails %}
+  <div class="row-fluid top_buttons"></div>
+
+  <div class="span4">
+    <form class="form-horizontal">
+      <div id="media_id" media-type="album" data-id="{{ album.albumid }}"></div>
+      <fieldset>
+
+        {% macro control_group(name, title) %}
+          <div class="control-group">
+            <label class="control-label" for="id_{{ name }}">{{ title }}</label>
+            <div class="controls">
+              {% if name == 'description' %}
+                <textarea type="text" id="id_{{ name }}" name="{{ name }}">{{ album[name] }}</textarea>
+              {% else %}
+                <input id="id_{{ name }}" name="{{ name }}" type="text" value="{{ album[name] }}">
+              {% endif %}
+              {% if name == 'genre' %}
+                <button class="btn add_genre_btn" data-file_type="audio" data-media_type="album" type="button">+</button>
+              {% endif %}
+            </div>
+          </div>
+        {% endmacro %}
+
+        {{ control_group('title', 'Title') }}
+        {{ control_group('artist', 'Artist') }}
+        {{ control_group('description', 'Description') }}
+        {{ control_group('genre', 'Genres') }}
+        {{ control_group('theme', 'Theme') }}
+        {{ control_group('style', 'Style') }}
+        {{ control_group('mood', 'Mood') }}
+        {{ control_group('type', 'Type') }}
+        {{ control_group('albumlabel', 'Album Label') }}
+        {{ control_group('rating', 'Rating') }}
+        {{ control_group('year', 'Year') }}
+
+        <input id="id_thumbnail" name="thumbnail" type="hidden" value="{{ album.thumbnail }}">
+        <button type="button" class="btn btn-success xbmc_save">Apply Changes</button>
+      </fieldset>
+    </form>
+  </div>
+
+  <div class="span3 thumbnail">
+    <img id="thumbnail_img" src="{{ item.albumdetails.thumbnail|xbmc_image }}">
+  </div>
+{% endif %}
+</div>
