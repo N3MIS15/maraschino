@@ -68,12 +68,10 @@ def xbmc_media_list(type):
 
     if type == 'movies':
         return xbmc.VideoLibrary.GetMovies(sort=sort)
-    if type == 'moviesets':
+    elif type == 'moviesets':
         return xbmc.VideoLibrary.GetMovieSets(sort=sort)
-    elif type == 'shows':
-        return xbmc.VideoLibrary.GetTVShows(sort=sort)
     else:
-        return xbmc.AudioLibrary.GetArtists(sort=sort)
+        return xbmc.VideoLibrary.GetTVShows(sort=sort)
 
 
 ### Get media details ###
@@ -186,68 +184,19 @@ def xhr_xbmcmm_episode_details(id):
     )
 
 
-@app.route('/xhr/xbmcmm/artist/<int:id>/')
-@requires_auth
-def xhr_xbmcmm_artist_details(id):
-    xbmc = jsonrpclib.Server(server_api_address())
-
-    try:
-        item = xbmc.AudioLibrary.GetArtistDetails(artistid=id, properties=artist_properties)
-        try:
-            item['albums'] = xbmc.AudioLibrary.GetAlbums(filter={'artistid': id}, sort={'method': 'year'})['albums']
-        except:
-            item['albums'] = {}
-    except Exception as e:
-        xbmcmm_except(e)
-        return jsonify(error=xbmc_error)
-
-    item['artistdetails'] = lst2str(item['artistdetails'])
-
-    return render_template('/xbmcmm/music-base.html',
-        item=item
-    )
-
-
-@app.route('/xhr/xbmcmm/album/<int:id>/')
-@requires_auth
-def xhr_xbmcmm_album_details(id):
-    xbmc = jsonrpclib.Server(server_api_address())
-
-    try:
-        item = xbmc.AudioLibrary.GetAlbumDetails(albumid=id, properties=album_properties)
-    except Exception as e:
-        xbmcmm_except(e)
-        return jsonify(error=xbmc_error)
-
-    item['albumdetails'] = lst2str(item['albumdetails'])
-
-    return render_template('/xbmcmm/music-album.html',
-        item=item
-    )
-
-
 ### Get genres ###
 @app.route('/xhr/xbmcmm_genres/<file_type>/<media>/', methods=['POST'])
 @requires_auth
 def xhr_xbmcmm_get_genres(file_type, media):
     xbmc = jsonrpclib.Server(server_api_address())
 
-    if file_type == 'video':
-        genres = video_genres
+    genres = video_genres
 
-        try:
-            xbmc_genres = xbmc.VideoLibrary.GetGenres(type=media)['genres']
-        except Exception as e:
-            xbmcmm_except(e)
-            return jsonify(error=xbmc_error)
-    else:
-        genres = audio_genres
-
-        try:
-            xbmc_genres = xbmc.AudioLibrary.GetGenres()['genres']
-        except Exception as e:
-            xbmcmm_except(e)
-            return jsonify(error=xbmc_error)
+    try:
+        xbmc_genres = xbmc.VideoLibrary.GetGenres(type=media)['genres']
+    except Exception as e:
+        xbmcmm_except(e)
+        return jsonify(error=xbmc_error)
 
     for genre in xbmc_genres:
         if not genre['label'] in genres:
@@ -531,73 +480,6 @@ def xhr_xbmcmm_set_episode(episodeid):
     try:
         xbmc.VideoLibrary.SetEpisodeDetails(**params)
         return jsonify(status='Episode details successfully changed.')
-    except Exception as e:
-        xbmcmm_except(e)
-        return jsonify(error=xbmc_error)
-
-
-### Set Artist ###
-@app.route('/xhr/xbmcmm/artist/set/<int:artistid>/', methods=['POST'])
-@requires_auth
-def xhr_xbmcmm_set_artist(artistid):
-    xbmc = jsonrpclib.Server(server_api_address())
-
-    try:
-        params = {
-            'artistid': artistid,
-            'artist': request.form['artist'],
-            'description': request.form['description'],
-            'genre': str2lst(request.form['genre']),
-            'style': str2lst(request.form['style']),
-            'mood': str2lst(request.form['mood']),
-            'born': request.form['born'],
-            'formed': request.form['formed'],
-            'died': request.form['died'],
-            'disbanded': request.form['disbanded'],
-            'yearsactive': str2lst(request.form['yearsactive'])
-        }
-
-    except Exception as e:
-        xbmcmm_except(e)
-        return jsonify(error='Invalid parameters.')
-
-    try:
-        xbmc.AudioLibrary.SetArtistDetails(**params)
-        return jsonify(status='Artist details successfully changed.')
-    except Exception as e:
-        xbmcmm_except(e)
-        return jsonify(error=xbmc_error)
-
-
-### Set Album ###
-@app.route('/xhr/xbmcmm/album/set/<int:albumid>/', methods=['POST'])
-@requires_auth
-def xhr_xbmcmm_set_album(albumid):
-    xbmc = jsonrpclib.Server(server_api_address())
-
-    try:
-        params = {
-            'albumid': albumid,
-            'title': request.form['title'],
-            'artist': str2lst(request.form['artist']),
-            'description': request.form['description'],
-            'genre': str2lst(request.form['genre']),
-            'theme': str2lst(request.form['theme']),
-            'style': str2lst(request.form['style']),
-            'mood': str2lst(request.form['mood']),
-            'type': request.form['type'],
-            'albumlabel': request.form['albumlabel'],
-            'rating': int(float(request.form['rating'])),
-            'year': int(request.form['year']),
-        }
-
-    except Exception as e:
-        xbmcmm_except(e)
-        return jsonify(error='Invalid parameters.')
-
-    try:
-        xbmc.AudioLibrary.SetAlbumDetails(**params)
-        return jsonify(status='Album details successfully changed.')
     except Exception as e:
         xbmcmm_except(e)
         return jsonify(error=xbmc_error)
@@ -1160,52 +1042,6 @@ def xhr_filesystem():
     )
 
 
-### The Audio DB ###
-tadb_apikey = '4d617261736368696e6f4d'
-
-
-def tadb_api(cmd, dev=False):
-    url = 'http://www.theaudiodb.com/api/v1/json/%s/%s' % (tadb_apikey, cmd)
-    request = urllib2.Request(url)
-    data = urllib2.urlopen(request).read()
-    data = json.JSONDecoder().decode(data)
-
-    if dev:
-        print url
-        print json.dumps(data, sort_keys=True, indent=4)
-
-    return data
-
-
-@app.route('/xhr/tadb/artist/query/<query>/')
-@app.route('/xhr/tadb/artist/id/<id>/')
-@requires_auth
-def tabd_artist_info(query='', id=''):
-    if not id:
-        logger.log('%s has no MusicBrainz ID, searching by title' % type, 'INFO')
-        try:
-            result = tadb_api('search.php?s=%s' % urllib.quote(query), True)
-        except Exception as e:
-            xbmcmm_except(e)
-            return jsonify(error='Failed to retrieve info from TheAudioDB')
-
-        if len(result['artists']) == 1:
-            artist = result['artists'][0]
-            artists = False
-            title = artist['strArtist']
-
-        else:
-            artist = False
-            artists = result['artists']
-            title = query
-
-    return render_template('/xbmcmm/modals/tadb_info.html',
-        title=title,
-        artist=artist,
-        artists=artists
-        )
-
-
 ### List to srting ###
 def lst2str(details):
     for i in details:
@@ -1246,18 +1082,9 @@ season_properties = ['season', 'showtitle', 'tvshowid']
 episode_properties = ['title', 'rating', 'plot', 'director', 'writer', 'season', 'firstaired',
                       'art', 'episode', 'tvshowid', 'showtitle', 'votes', 'playcount']
 
-artist_properties = ['description', 'instrument', 'style', 'mood', 'born', 'formed', 'died', 'disbanded',
-                     'yearsactive', 'musicbrainzartistid', 'genre', 'thumbnail', 'fanart']
-
-album_properties = ['title', 'description', 'artist', 'genre', 'theme', 'mood', 'style', 'type',
-                    'albumlabel', 'rating', 'year', 'musicbrainzalbumid', 'musicbrainzalbumartistid',
-                    'thumbnail']
-
 
 ### Genres  ###
 video_genres = ['Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Disaster', 'Documentary', 'Drama',
                 'Family', 'Fantasy', 'Film Noir', 'Foreign', 'History', 'Holiday', 'Horror', 'Indie',
                 'Music', 'Musical', 'Mystery', 'Road Movie', 'Romance', 'Science Fiction', 'Sport',
                 'Sports Film', 'Suspense', 'Thriller', 'War', 'Western']
-
-audio_genres = ['Metal', 'Rock', 'Pop']

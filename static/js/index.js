@@ -159,11 +159,6 @@ $(document).ready(function() {
           $(this).replaceWith(construct_inactive_module('synopsis', 'Synopsis'));
         });
 
-        // hide trakt module if visible
-        $('#trakt').fadeOut(200, function() {
-          $(this).replaceWith(construct_inactive_module('trakt', 'trakt.tv'));
-        });
-
         currently_playing_id = null;
 
       } else {
@@ -338,7 +333,7 @@ $(document).ready(function() {
   });
 
   // Volume Function
-  $(document).on('click', '#currently_playing .volume', function(e){
+  $(document).on('click', '#currently_playing .controls .volume', function(e){
     var y = e.pageY - $(this).offset().top;
     var percent = Math.round((y / $(this).height())*100);
     if(percent < 0){percent = 0;}
@@ -349,7 +344,7 @@ $(document).ready(function() {
     });
   });
 
-  $(document).on('mouseenter', '#currently_playing .volume', function(e){
+  $(document).on('mouseenter', '#currently_playing .controls .volume', function(e){
     var y = e.pageY - $(this).offset().top;
     var percent = Math.round((y / $(this).height())*100);
     if(percent < 0){percent = 0;}
@@ -358,7 +353,7 @@ $(document).ready(function() {
     $(this).children('div#tooltip').css('margin-top', (10*(percent-50))+'%');
   });
 
-  $(document).on('mousemove', '#currently_playing .volume', function(e){
+  $(document).on('mousemove', '#currently_playing .controls .volume', function(e){
     var y = e.pageY - $(this).offset().top;
     var percent = Math.round((y / $(this).height())*100);
     if(percent < 0){percent = 0;}
@@ -828,7 +823,6 @@ $(document).ready(function() {
   });
 
   // Search Episode Functionality on Magnifying Glass png
-
   $(document).on('click', '#sickbeard .coming_ep div.options img.search', function(){
     $(this).attr('src', WEBROOT + '/static/images/xhrloading.gif');
     var ep = $(this).attr('episode');
@@ -848,14 +842,12 @@ $(document).ready(function() {
   });
 
   // Air time on hover
-
   $(document).on('hover', '#sickbeard .coming_ep', function(){
     var id = ($(this).attr('id'));
   });
 
 
   // Load show info from banner display
-
   $(document).on('click', '#sickbeard .coming_ep .options img.banner', function(){
     var tvdb = $(this).attr('id');
     $.get(WEBROOT + '/sickbeard/get_show_info/'+tvdb, function(data){
@@ -864,7 +856,6 @@ $(document).ready(function() {
   });
 
   // Plot display function
-
   $(document).on('mouseenter', '#sickbeard .coming_ep .details .plot-title', function(){
     $(this).toggle();
     var id = $(this).closest('div.coming_ep').attr('id');
@@ -872,7 +863,6 @@ $(document).ready(function() {
   });
 
   // Plot hide function
-
   $(document).on('mouseleave', '#sickbeard .coming_ep', function(){
     var id = $(this).attr('id');
     $('#sickbeard #'+id+' .details .plot-title').show();
@@ -880,13 +870,11 @@ $(document).ready(function() {
   });
 
   // Toggle missed episodes
-
   $(document).on('click', '#sickbeard #missed', function(){
     $('#sickbeard .missed').toggle();
   });
 
   // All Shows menu
-
   $(document).on('click', '#sickbeard .menu .all', function(){
     $.get(WEBROOT + '/sickbeard/get_all', function(data){
       $('#sickbeard').replaceWith(data);
@@ -894,7 +882,6 @@ $(document).ready(function() {
   });
 
   // Coming episodes Menu
-
   $(document).on('click', '#sickbeard .menu .upcoming', function(){
     $.get(WEBROOT + '/xhr/sickbeard', function(data){
       $('#sickbeard').replaceWith(data);
@@ -902,7 +889,6 @@ $(document).ready(function() {
   });
 
   // History menu
-
   $(document).on('click', '#sickbeard .menu .history', function(){
     $.get(WEBROOT + '/sickbeard/history/30', function(data){
       $('#sickbeard').html($(data).html());
@@ -917,13 +903,11 @@ $(document).ready(function() {
   });
 
   // Show Menu
-
   $(document).on( 'click', '#sickbeard .menu-icon', function(){
     $('#sickbeard .menu').fadeToggle(200);
   });
 
   // Show info
-
   $(document).on('click', '#sickbeard #sickbeard-list ul', function(){
     var id = $(this).attr('id');
     $.get(WEBROOT + '/sickbeard/get_show_info/'+id, function(data){
@@ -932,7 +916,6 @@ $(document).ready(function() {
   });
 
   // Episode list back button functionality
-
   $(document).on('click', '#sb_content > #show .sb-back', function(){
     $.get(WEBROOT + '/sickbeard/get_all', function(data){
       $('#sickbeard').replaceWith(data);
@@ -940,7 +923,6 @@ $(document).ready(function() {
   });
 
   // Season info
-
   $(document).on('click', '#sb_content > #show ul.seasons li', function(){
     $.get(WEBROOT + '/sickbeard/get_season/'+$(this).attr('tvdbid')+'/'+$(this).attr('season'), function(data){
       $('#sickbeard').replaceWith(data);
@@ -949,7 +931,6 @@ $(document).ready(function() {
   });
 
   // Going into episode info
-
   $(document).on('click', '#sickbeard .episode-list #season tbody tr', function(){
     $.get(WEBROOT + '/sickbeard/get_ep_info/'+$(this).attr('link'), function(data){
       $('#sickbeard').replaceWith(data);
@@ -957,8 +938,7 @@ $(document).ready(function() {
   });
 
   // Episode info back button functionality
-
-  $(document).on('click', '#sickbeard .episode-info .back', function(){
+  $(document).on('click', '#sickbeard .episode-info div.back', function(){
     $.get(WEBROOT + '/sickbeard/get_season/'+$(this).attr('tvdbid')+'/'+$(this).attr('season'), function(data){
       $('#sickbeard').replaceWith(data);
       $('#sickbeard .episode-list .tablesorter').tablesorter({sortList: [[0,0]]});
@@ -966,7 +946,6 @@ $(document).ready(function() {
   });
 
   // Back Button Episode List
-
   $(document).on('click', '#sickbeard .episode-list >.back', function(){
     $.get(WEBROOT + '/sickbeard/get_show_info/'+$(this).attr('tvdbid'), function(data){
       $('#sickbeard').replaceWith(data);
@@ -974,7 +953,6 @@ $(document).ready(function() {
   });
 
   // Show Banner manager display
-
   $(document).on('click', '#sickbeard #show .banner .options' , function(){
     if($(this).hasClass('open')){  // closing
       $('#sickbeard #show .banner').transition({ y: '0px' });
@@ -985,7 +963,6 @@ $(document).ready(function() {
   });
 
   // Delete show function
-
   $(document).on('click', '#sickbeard #show .manage .delete' , function(){
     var id = $('#sickbeard #show .manage').attr('tvdbid');
     $.get(WEBROOT + '/sickbeard/delete_show/'+id)
@@ -998,7 +975,6 @@ $(document).ready(function() {
   });
 
   // Refresh show function
-
   $(document).on('click', '#sickbeard #show .manage .refresh' , function(){
     var id = $('#sickbeard #show .manage').attr('tvdbid');
     $.get(WEBROOT + '/sickbeard/refresh_show/'+id)
@@ -1011,7 +987,6 @@ $(document).ready(function() {
   });
 
   // Update show function
-
   $(document).on('click', '#sickbeard #show .manage .update' , function(){
     var id = $('#sickbeard #show .manage').attr('tvdbid');
     $.get(WEBROOT + '/sickbeard/update_show/'+id)
@@ -1024,7 +999,6 @@ $(document).ready(function() {
   });
 
   // Shutoff function
-
   $(document).on('click', '#sickbeard div.powerholder .power', function(){
     $.get(WEBROOT + '/sickbeard/shutdown')
     .success(function(data){
@@ -1036,7 +1010,6 @@ $(document).ready(function() {
   });
 
   // Restart Function
-
   $(document).on('click', '#sickbeard div.powerholder .restart', function(){
     $.get(WEBROOT + '/sickbeard/restart')
     .success(function(data){
@@ -1048,7 +1021,6 @@ $(document).ready(function() {
   });
 
   // Log function
-
   $(document).on('click', '#sickbeard div.powerholder .log', function(){
     $.get(WEBROOT + '/sickbeard/log/error', function(data){
       $('#sickbeard').replaceWith(data);
@@ -1056,7 +1028,6 @@ $(document).ready(function() {
   });
 
   // Log info level change
-
   $(document).on('change', '#sickbeard #log .level', function(){
     var level = $('#sickbeard #log .level').attr('value');
     $.get(WEBROOT + '/sickbeard/log/'+level, function(data){
@@ -1065,7 +1036,6 @@ $(document).ready(function() {
   });
 
   // Load search template
-
   $(document).on('click', '#sickbeard div.powerholder .add', function(){
     $.get(WEBROOT + '/sickbeard/search/')
     .success(function(data){
@@ -1077,7 +1047,6 @@ $(document).ready(function() {
   });
 
   // Load search results
-
   $(document).on('keypress', '#sickbeard .powerholder input', function(e){
     if(e.which == 13){
       e.preventDefault();
@@ -1098,9 +1067,12 @@ $(document).ready(function() {
   });
 
   // Add show function
-
   $(document).on('click', '#sickbeard #sb_search #result li', function(){
-    $.get(WEBROOT + '/sickbeard/add_show/'+$(this).attr('tvdbid'))
+    var status = $('#sb_search #status').find(':selected').val();
+    var lang = $('#sb_search #lang').find(':selected').val();
+    var initial = $('#sb_search #quality').find(':selected').val();
+    var params = 'lang='+lang+'&status='+status+'&initial='+initial;
+    $.get(WEBROOT + '/sickbeard/add_show/'+$(this).attr('tvdbid')+'/?'+params)
     .success(function(data){
       popup_message(data);
     })
@@ -1110,7 +1082,6 @@ $(document).ready(function() {
   });
 
   // Magnifying Glass Episode INFO
-
   $(document).on('click', '#sickbeard .episode-info .status .search', function(){
     $(this).attr('src', WEBROOT + '/static/images/xhrloading.gif');
     var ep = $(this).attr('episode');
@@ -1131,7 +1102,6 @@ $(document).ready(function() {
   });
 
   // Episode set status info
-
   $(document).on('change', '#sickbeard .episode-info .status select', function(){
     var ep = $(this).attr('episode');
     var season = $(this).attr('season');
@@ -1163,6 +1133,16 @@ $(document).ready(function() {
   var remote = false;
   var remote_connected = false;
   var remote_connection;
+  var remote_inac_timeout;
+  var remote_inac_msec;
+  var remote_inac_enable = true;
+
+  if ($('body').data('remote_inactivity_enable') > 0){
+    remote_inac_msec = $('body').data('remote_inactivity_enable') * 1000;
+  } else {
+    remote_inac_enable = false;
+  }
+
   // Activates remote functions
   function send_key(key){
     $.get(WEBROOT + '/remote/'+key)
@@ -1176,8 +1156,17 @@ $(document).ready(function() {
     });
   }
 
-  $(document).on('click', '#remote_icon', function() {
-    $(this).toggleClass('on');
+  $(document).on('click', '#remote_bar.on', function(){
+    toggleRemoteControl();
+  });
+
+  $(document).on('click', '#remote_icon', function(){
+    toggleRemoteControl();
+  });
+
+  function toggleRemoteControl(){
+    $('#remote_icon').toggleClass('on');
+    $('#remote_bar').toggleClass('on');
     if(remote){
       remote = false;
       remote_connected = false;
@@ -1192,7 +1181,7 @@ $(document).ready(function() {
     if(remote){
       $(document).on('keydown', 'body' , function(e){
         e.preventDefault();
-        var char = '';
+        var character = '';
         var keyCodeMap = {8:"backspace", 9:"tab", 13:"return", 16:"shift", 17:"ctrl", 18:"alt", 19:"pausebreak", 20:"capslock", 27:"escape", 32:"space",
             33:"pageup", 34:"pagedown", 35:"end", 36:"home", 37:"left", 38:"up", 39:"right", 40:"down", 43:"plus", 44:"printscreen", 45:"insert", 46:"delete",
             48:"0", 49:"1", 50:"2", 51:"3", 52:"4", 53:"5", 54:"6", 55:"7", 56:"8", 57:"9", 59:"semicolon", 61:"plus", 65:"a", 66:"b", 67:"c", 68:"d", 69:"e",
@@ -1202,16 +1191,28 @@ $(document).ready(function() {
             123:"f12", 144:"numlock", 145:"scrolllock", 186:"semicolon", 187:"plus", 188:"comma", 189:"minus", 190:"period", 191:"forwardslash", 192:"tilde",
             219:"openbracket", 220:"backslash", 221:"closebracket", 222:"singlequote"};
         if (e.which === null){
-          char= String.fromCharCode(e.keyCode);    // old IE
+          character= String.fromCharCode(e.keyCode);    // old IE
         } else {
-          char = keyCodeMap[e.which];
+          character = keyCodeMap[e.which];
         }
-        send_key(char);
+        send_key(character);
+        //reset inactivity counter after keypress
+        clearTimeout(remote_inac_timeout);
+        if (remote_inac_enable){
+          remote_inac_timeout = setTimeout( function(){ toggleRemoteControl(); }, remote_inac_msec);
+        }
       });
+      //initialize inactivity timer
+      clearTimeout(remote_inac_timeout);
+      if (remote_inac_enable){
+        remote_inac_timeout = setTimeout( function(){ toggleRemoteControl(); }, remote_inac_msec);
+      }
     } else {
       $(document).off('keydown', 'body');
+      //clear inactivity timer
+      clearTimeout(remote_inac_timeout);
     }
-  });
+  }
   /********* END REMOTE ***********/
 
   /********* START SABNZBD ***********/
@@ -1365,7 +1366,9 @@ $(document).ready(function() {
     $.get(WEBROOT + '/xhr/couchpotato/history/')
     .success(function(data){
       $('#couchpotato').replaceWith(data);
-      $('#couchpotato .menu').prepend('<li class="mark_read" title="Mark all notifications as read"><span>Mark All as Read</span></li>');
+      if($('span#unread').text() != '0'){
+        $('#couchpotato .menu').prepend('<li class="mark_read" title="Mark all notifications as read"><span>Mark All as Read</span></li>');
+      }
     });
   });
   // Load search results
@@ -2663,6 +2666,47 @@ $(document).ready(function() {
     }
   });
 
+  // Ip camera module
+//$('#button_toggle_more').click(function () {
+ //   $(this).text($(this).text() == 'More' ? 'Less' : 'More');
+ //   $('#shit').toggle('slow', function () {
+        //animation complete
+//});
+//});
+
+//$('#button_toggle_stream').click(function () {
+//    $(this).text($(this).text() == 'Off' ? 'On' : 'Off');
+//    $('#webstreamz').toggle('slow', function () {
+        //animation complete
+//});
+//});
+
+//$(document).on('click', '#ipcamera .control_base', function() {
+//    $.get(WEBROOT + '/xhr/ipcamera/control/' + $(this).data('xhr_url'), function(data){
+//      $('#ipcamera').replaceWith(data);
+//    });
+//  });
+
+// Start off IPCAMERA
+$(document).on('click', '#ipcamera .camera_settings', function() {
+    $.get(WEBROOT + '/xhr/ipcamera/camera_settings/' + $(this).data('xhr_url'), function(data){
+      $('#ipcamera').replaceWith(data);
+    });
+  });
+
+$(document).on('click', '#ipcamera .control_base', function() {
+    $.get(WEBROOT + '/xhr/ipcamera/control/' + $(this).data('xhr_url'), function(data){
+      $('#ipcamera').replaceWith(data);
+    });
+  });
+
+$(document).on('click', '#ipcamera .set_misc', function() {
+    $.get(WEBROOT + '/xhr/ipcamera/set_misc/' + $(this).data('xhr_url'), function(data){
+      $('#ipcamera').replaceWith(data);
+    });
+  });
+// End of IPCAMERA
+  
   // Send XBMC notification
 
   $(document).on('click', '.switch_server .message', function(){
@@ -3027,3 +3071,5 @@ $(document).ready(function() {
       e.preventDefault();
     }
   });});
+  
+  // Stared here, if its not working copy the shit higher.

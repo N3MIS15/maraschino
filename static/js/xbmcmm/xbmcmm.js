@@ -199,55 +199,6 @@ $(document).ready(function() {
     $('#modal_template').modal('hide');
   });
 
-  /********************/
-  /*    Music Stuff   */
-  /********************/
-
-  // Album tab
-  $(document).on('click', '.album_tab', function() {
-    $('.album_details').text('');
-    $.get(WEBROOT + '/xhr/xbmcmm/album/' + $(this).data('albumid'), function(data) {
-      if (!data.error) {
-        $('.album_details').replaceWith(data);
-      }
-      else {
-        alert_popup('error', data.error);
-      }
-    });
-  });
-
-  // artist tab
-  $(document).on('click', '.artist_tab', function() {
-    $('.album_details').text('');
-    $.get(WEBROOT + '/xhr/xbmcmm/artist/' + $(this).data('id'), function(data) {
-      if (!data.error) {
-        $('.main').replaceWith(data);
-      }
-      else {
-        alert_popup('error', data.error);
-      }
-    });
-  });
-
-  // Audio DB Info
-  $(document).on('click', '.tadb_info_btn', function() {
-    var mbid = $('.main #media_id').data('mbid');
-    var type = $('.main #media_id').data('type');
-    var query = $('.main #id_artist').val();
-    var xhr_url;
-    if (!mbid) {
-      xhr_url = WEBROOT + '/xhr/tadb/' + type + '/query/' + query;
-    }
-    else {
-      xhr_url = WEBROOT + '/xhr/tadb/' + type + '/id/' + mbid;
-    }
-
-    $.get(xhr_url, function(data) {
-      $('#modal_template').replaceWith(data);
-      $('#modal_template').modal('show');
-    });
-  });
-
   // Genres
   $(document).on('click', '.genre_save', function() {
     var genres = [];
@@ -708,9 +659,6 @@ $(document).ready(function() {
         alert_popup('success', data.status);
         if (type == 'episode') {
           $('.episode_list #'+id).click();
-        }
-        else if (type == 'album') {
-          $('#tabs .album'+id).click();
         }
         else {
           $('.media_list #'+id).children('a').text(title);

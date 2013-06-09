@@ -51,6 +51,7 @@ def import_modules():
     import modules.diskspace
     import modules.headphones
     import modules.index
+    import modules.ipcamera
     import modules.library
     import modules.log
     import modules.nzbget
