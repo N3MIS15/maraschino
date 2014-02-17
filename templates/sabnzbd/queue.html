@@ -44,15 +44,20 @@
 </div>
 
 <div class="queue {% if item %}{{ queue_status }}{% else %}show{% endif %}">
-    <table>
-    {% for x in sabnzbd.slots %}
-      <tr id="{{x.nzo_id}}" data-action={% if x.status == 'Paused' %}resume{% else %}pause{% endif %}>
-        <td class="pause"><img src="{% if x.status == 'Paused' %}{{ url_for('static', filename='images/pause.png') }}{% else %}{{ url_for('static', filename='images/play.png') }}{% endif %}" ></td>
-        <td class="name">{{x.filename}}</td>
-        <td class="size">{{x.size}}</td>
-        <td class="delete"><img src="{{ url_for('static', filename='images/remove_icon.png') }}" ></td>
-      </tr>
-    {% endfor %}
+  {% if sabnzbd.slots %}
+    <div align="center">Queue</div>
+    <hr>
+    <table id="queue">
+      {% for x in sabnzbd.slots %}
+        <tr id="{{x.nzo_id}}" data-action={% if x.status == 'Paused' %}resume{% else %}pause{% endif %}>
+          <td class="pause"><img src="{% if x.status == 'Paused' %}{{ url_for('static', filename='images/pause.png') }}{% else %}{{ url_for('static', filename='images/play.png') }}{% endif %}" ></td>
+          <td class="name">{{x.filename}}</td>
+          <td class="size">{{x.size}}</td>
+          <td class="delete"><img src="{{ url_for('static', filename='images/remove_icon.png') }}" ></td>
+        </tr>
+      {% endfor %}
     </table>
-  </div>
+  {% endif %}
+  {% include 'sabnzbd/history.html' %}
+</div>
 {% endblock %}

@@ -1,0 +1,16 @@
+<div align="center" style="margin-top:10px;">History</div>
+<hr>
+<table id="history">
+  {% for x in history.slots %}
+    <tr>
+      <td class="retry" data-url="{{ webroot_url('/xhr/sabnzbd/history/retry/' + x.nzo_id) }}">
+        <img src="{{url_for('static', filename='images/refresh.png')}}" >
+      </td>
+      <td class="name">{{x.nzb_name|truncate(38, 'false')}}</td>
+      <td class="size">{{x.size}}</td>
+      <td class="delete" data-url="{{ webroot_url('/xhr/sabnzbd/history/delete/' + x.nzo_id) }}">
+        <img src="{{ url_for('static', filename='images/remove_icon.png') }}" >
+      </td>
+    </tr>
+  {% endfor %}
+</table>

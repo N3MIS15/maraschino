@@ -91,9 +91,8 @@ def xhr_sabnzbd(queue_status='hide'):
     message = None
 
     try:
-        result = urllib.urlopen(sabnzbd_url('queue')).read()
-        sabnzbd = json.JSONDecoder().decode(result)
-        sabnzbd = sabnzbd['queue']
+        sabnzbd = sabnzbd_api(method='queue')['queue']
+        history = sabnzbd_api(method='history', params='&limit=50')['history']
 
         download_speed = format_number(int((sabnzbd['kbpersec'])[:-3]) * 1024) + '/s'
 
@@ -117,7 +116,8 @@ def xhr_sabnzbd(queue_status='hide'):
         old_config=old_config,
         queue_status=queue_status,
         show_empty=get_setting_value('sabnzbd_show_empty') == '1',
-        message=message
+        message=message,
+        history=history
     )
 
 
